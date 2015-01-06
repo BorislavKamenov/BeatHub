@@ -119,7 +119,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayerControl
         }
     }
 
-    //user song_simple_row select
+    //user song select
     public void songPicked(View view){
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
         musicSrv.playSong();

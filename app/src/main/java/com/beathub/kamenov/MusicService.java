@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -85,11 +86,11 @@ MediaPlayer.OnCompletionListener {
 		return false;
 	}
 
-	//play a song_simple_row
+	//play a song
 	public void playSong(){
 		//play
 		player.reset();
-		//get song_simple_row
+		//get song
         Song playSong = songs.get(songPosn);
 		//get title
 		songTitle=playSong.getTitle();
@@ -97,7 +98,7 @@ MediaPlayer.OnCompletionListener {
 		long currSong = playSong.getID();
 		//set uri
 		Uri trackUri = ContentUris.withAppendedId(
-				android.provider.MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+				MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
 				currSong);
 		//set the data source
 		try{ 
