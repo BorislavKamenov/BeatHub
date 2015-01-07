@@ -5,16 +5,22 @@ import android.graphics.Bitmap;
 public class Song {
 	
 	private long id;
+    private String raw_name;
+    private String nameWithoutExt;
+    private long folder_id;
+    private long duration;
+    private long album_id;
+    private long artist_id;
 	private String title;
 	private String artist;
     private Bitmap artCover;
 	
-//	public Song(long songID, String songTitle, String songArtist){
-//
-//        this.id = songID;
-//        this.title = songTitle;
-//        this.artist = songArtist;
-//	}
+	public Song(long songID, String songTitle, String songArtist){
+
+        this.id = songID;
+        this.title = songTitle;
+        this.artist = songArtist;
+	}
 
     public Song(long songID, Bitmap artCover, String songTitle, String songArtist){
 

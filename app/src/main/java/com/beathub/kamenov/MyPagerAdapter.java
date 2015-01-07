@@ -1,5 +1,6 @@
 package com.beathub.kamenov;
 
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,6 +11,8 @@ import com.nineoldandroids.view.ViewHelper;
 
 public class MyPagerAdapter extends FragmentPagerAdapter implements
 ViewPager.OnPageChangeListener {
+
+
 
 	private boolean swipedLeft=false;
 	private int lastPage=9;
@@ -65,8 +68,6 @@ ViewPager.OnPageChangeListener {
 		next = getRootView(position +1);
 		prev = getRootView(position -1);
 
-		
-		
 		return curFragment;
 	}
 
@@ -164,6 +165,8 @@ ViewPager.OnPageChangeListener {
 	@Override
 	public void onPageScrollStateChanged(int state) {
 	}
+
+
 
 	private MyLinearLayout getRootView(int position)
 	{
