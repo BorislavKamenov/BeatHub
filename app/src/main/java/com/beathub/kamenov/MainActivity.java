@@ -274,7 +274,7 @@ public class MainActivity extends FragmentActivity {
 //            return;
 //        }
 
-        if(!isBackSide){
+        if (!isBackSide) {
 
             getFragmentManager()
                     .beginTransaction()
@@ -290,7 +290,7 @@ public class MainActivity extends FragmentActivity {
                     .commit();
             isBackSide = true;
 
-        }else {
+        } else {
 
             getFragmentManager()
                     .beginTransaction()
