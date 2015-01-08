@@ -1,8 +1,13 @@
 package DataBases;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import android.provider.MediaStore;
 
 public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
@@ -26,7 +31,6 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
                 COLUMN_FOLDER_NAME + " TEXT, " +
                 COLUMN_PATH + " TEXT " + " ) ";
         protected static final String   UPDATE_STATEMENT_FOLDERS = " DELETE IF EXISTS TABLE " + TABLE_NAME_FOLDERS;
-
 
         //table files
         private static final String TABLE_NAME_FILES = "files";
@@ -97,21 +101,21 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         protected static final String UPDATE_STATEMENT_ARTISTS = " DELETE IF EXISTS TABLE " + TABLE_NAME_ARTISTS;
 
 
-    public final String[] create_tables = {
-            CREATE_STATEMENT_FOLDERS,
-            CREATE_STATEMENT_FILES,
-            CREATE_STATEMENT_ALBUMS,
-            CREATE_STATEMENT_PLAYLISTS,
-            CREATE_STATEMENT_PLAYLISTS_ENTRIES,
-            CREATE_STATEMENT_ARTISTS};
+        public final String[] create_tables = {
+                CREATE_STATEMENT_FOLDERS,
+                CREATE_STATEMENT_FILES,
+                CREATE_STATEMENT_ALBUMS,
+                CREATE_STATEMENT_PLAYLISTS,
+                CREATE_STATEMENT_PLAYLISTS_ENTRIES,
+                CREATE_STATEMENT_ARTISTS};
 
-    public final String[] update_tables = {
-            UPDATE_STATEMENT_FOLDERS,
-            UPDATE_STATEMENT_FILES,
-            UPDATE_STATEMENT_ALBUMS,
-            UPDATE_STATEMENT_PLAYLISTS,
-            UPDATE_STATEMENT_PLAYLISTS_ENTRIES,
-            UPDATE_STATEMENT_ARTISTS};
+        public final String[] update_tables = {
+                UPDATE_STATEMENT_FOLDERS,
+                UPDATE_STATEMENT_FILES,
+                UPDATE_STATEMENT_ALBUMS,
+                UPDATE_STATEMENT_PLAYLISTS,
+                UPDATE_STATEMENT_PLAYLISTS_ENTRIES,
+                UPDATE_STATEMENT_ARTISTS};
 
 
     @Override
@@ -130,4 +134,69 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public void addFolderPath(String path){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues content = new ContentValues();
+        content.put(COLUMN_FOLDER_NAME, getFolderNameFromPath(path));
+        content.put(COLUMN_PATH, path);
+
+        db.insert(TABLE_NAME_FOLDERS, null, content);
+        db.close();
+    }
+    private String getFolderNameFromPath(String path){
+
+        for(int i = path.length() - 1; i >= 0; i--){
+            if(path.charAt(i) == '/'){
+                return path.substring(i + 1, path.length());
+            }
+        }
+        return "No Folder";
+    }
+
+    public void importFilesInDBByFolders(ContentResolver resolver){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor folders = db.query(TABLE_NAME_FOLDERS, null, null, null, null, null, null);
+
+        if (folders.moveToFirst()){
+            do{
+                String path = folders.getString(folders.getColumnIndex(COLUMN_PATH));
+                long folder_id = folders.getLong(folders.getColumnIndex(COLUMN_ID));
+
+                insertAllFilesFromFolderInDB(resolver, path, folder_id);
+            }while(folders.moveToNext());
+        }
+
+        folders.moveToFirst();
+        db.close();
+    }
+
+    private void insertAllFilesFromFolderInDB(ContentResolver resolver, String path, long folder_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String key = "%" + path + "%";
+        Cursor songsInFolder = resolver.query(musicUri, null, MediaStore.Audio.Media.DATA + " like ? ", new String[]{key}, null);
+
+        if (songsInFolder.moveToFirst()){
+            do{
+
+                ContentValues values = new ContentValues();
+                values.put(COLUMN_RAW_NAME, songsInFolder.getString(songsInFolder.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)));
+                values.put(COLUMN_NAME_NO_EXT, songsInFolder.getString(songsInFolder.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)));
+                values.put(COLUMN_FOLDER_ID, folder_id);
+                values.put(COLUMN_DURATION, songsInFolder.getInt(songsInFolder.getColumnIndex(MediaStore.Audio.Media.DURATION)));
+                values.put(COLUMN_ALBUM_ID, songsInFolder.getInt(songsInFolder.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)));
+                values.put(COLUMN_ARTIST_ID, songsInFolder.getInt(songsInFolder.getColumnIndex(MediaStore.Audio.Media.ARTIST_ID)));
+
+                db.insert(TABLE_NAME_FILES, null, values);
+
+            }while(songsInFolder.moveToNext());
+        }
+
+        db.close();
+    }
 }

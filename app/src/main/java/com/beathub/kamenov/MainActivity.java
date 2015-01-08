@@ -1,16 +1,12 @@
 package com.beathub.kamenov;
 
-import android.content.ComponentName;
 import android.content.ContentResolver;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -18,12 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
-import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.beathub.kamenov.MusicService.MusicBinder;
+import DataBases.BeatHubBaseHelper;
 
 public class MainActivity extends FragmentActivity {
 
@@ -37,29 +31,16 @@ public class MainActivity extends FragmentActivity {
     public MyPagerAdapter adapter;
     public ViewPager pager;
 
-    //service
-    private MusicService musicSrv;
-    private Intent playIntent;
-    //binding
-    private boolean musicBound = false;
-
-    //controller
-    private MusicController controller;
-    private FrameLayout playerContainer;
-
-    //activity and playback pause flags
-    private boolean paused = false, playbackPaused = false;
-
     //card flip
     private boolean isBackSide = false;
-
-    private ListView currentSong;
+    private BeatHubBaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbTests();
 
         Song s = new Song(200, "I Will Never Lets you down", "Rita Ora");
         RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
@@ -98,31 +79,6 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    //connect to the service
-    private ServiceConnection musicConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            MusicBinder binder = (MusicBinder) service;
-            //get service
-            musicSrv = binder.getService();
-            //pass list
-            // musicSrv.setList(songList);
-            musicBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            musicBound = false;
-        }
-    };
-
-    //start and bind the service when the activity starts
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -146,7 +102,7 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //method to retrieve song_simple_row info from device
+    //method to retrieve song info from device
     public void getSongList() {
 
         //query external audio
@@ -183,34 +139,8 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        paused = true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-        controller.hide();
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        stopService(playIntent);
-        musicSrv = null;
-        super.onDestroy();
-    }
-
-
     /**
      * Downsampling algorithm for an artcover images
-     *
      * @param options
      * @param reqWidth  new width of the image
      * @param reqHeight new height of the image
@@ -308,4 +238,10 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    private void dbTests(){
+        db = new BeatHubBaseHelper(getApplicationContext());
+
+        db.addFolderPath("storage/extSdCard/Music");
+        db.importFilesInDBByFolders(getContentResolver());
+    }
 }
