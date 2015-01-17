@@ -1,21 +1,18 @@
 package com.beathub.kamenov;
 
-import android.content.ContentResolver;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import DataBases.BeatHubBaseHelper;
 
@@ -30,6 +27,15 @@ public class MainActivity extends FragmentActivity {
 
     public MyPagerAdapter adapter;
     public ViewPager pager;
+    public ArrayList<Song> songList;
+
+    public void setSongList(ArrayList<Song> songList) {
+        this.songList = songList;
+    }
+
+    public ArrayList<Song> getSongList() {
+        return songList;
+    }
 
     //card flip
     private boolean isBackSide = false;
@@ -42,12 +48,18 @@ public class MainActivity extends FragmentActivity {
 
         dbTests();
 
-        Song s = new Song(200, "I Will Never Lets you down", "Rita Ora");
         RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
         TextView songTitle = (TextView) findViewById(R.id.currentSongName);
         TextView artistName = (TextView) findViewById(R.id.currentSongArtistName);
-        songTitle.setText(s.getTitle());
-        artistName.setText(s.getArtist());
+
+        if (savedInstanceState == null) {
+            ArtCoverFragment artcoverFragment = new ArtCoverFragment();
+
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragments_container, artcoverFragment)
+                    .commit();
+        }
 
         currentSongView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,14 +69,7 @@ public class MainActivity extends FragmentActivity {
         });
 
         //set default fragment
-        if (savedInstanceState == null) {
-            ArtCoverFragment artcoverFragment = new ArtCoverFragment();
 
-            getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragments_container, artcoverFragment)
-                    .commit();
-        }
 
 //        pager = (ViewPager) findViewById(R.id.myviewpager);
 //
@@ -100,43 +105,6 @@ public class MainActivity extends FragmentActivity {
                 break;*/
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    //method to retrieve song info from device
-    public void getSongList() {
-
-        //query external audio
-        ContentResolver musicResolver = getContentResolver();
-        Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-
-        //filtering only *.mp3 files
-        String selectionMimeType = MediaStore.Files.FileColumns.MIME_TYPE + "=?";
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension("mp3");
-        String[] selectionArgsMp3 = new String[]{mimeType};
-
-        Cursor musicCursor = musicResolver.query(musicUri, null, selectionMimeType, selectionArgsMp3, null);
-
-        if (musicCursor != null && musicCursor.moveToFirst()) {
-
-            //get columns
-            int dataColumn = musicCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-            int idColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media._ID);
-            int titleColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
-            int artistColumn = musicCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
-
-            //add songs to list
-            do {
-                //musicCursor.getString(dataColumn) is the absolute file path of the audio data.
-                Bitmap albumArt = getAlbumArtCover(musicCursor.getString(dataColumn));
-                long songId = musicCursor.getLong(idColumn);
-                String songTitle = musicCursor.getString(titleColumn);
-                String songArtist = musicCursor.getString(artistColumn);
-
-                Song song = new Song(songId, albumArt, songTitle, songArtist);
-                //songList.add(song);
-            }
-            while (musicCursor.moveToNext());
-        }
     }
 
     /**
@@ -199,11 +167,6 @@ public class MainActivity extends FragmentActivity {
     //card flip animation
     private void flipCard() {
 
-//        if (isBackSide) {
-//            getFragmentManager().popBackStack();
-//            return;
-//        }
-
         if (!isBackSide) {
 
             getFragmentManager()
@@ -212,7 +175,7 @@ public class MainActivity extends FragmentActivity {
                             R.animator.card_flip_right_in, R.animator.card_flip_right_out,
                             R.animator.card_flip_left_in, R.animator.card_flip_left_out)
 
-                    .replace(R.id.fragments_container, new ListsFragment())
+                    .replace(R.id.fragments_container, new MainListsFragment())
 
                     .addToBackStack(null)
 

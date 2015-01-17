@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ff0a0a0a"
+    android:background="#ff152333"
     tools:context=".MainActivity">
 
 
@@ -16,9 +16,13 @@
         android:id="@+id/player_controls_container"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/currentSongListView"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="10dp">
+        android:layout_above="@+id/currentSongListView">
+        
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/playButton"
+            android:thumb="@drawable/progress_bar_circle"/>
 
         <Button
             android:id="@+id/playButton"
@@ -27,8 +31,8 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:background="@drawable/play_button_selector"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
 
         <Button
             android:id="@+id/previousButton"
@@ -82,9 +86,9 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="7dp" />
+            android:layout_marginTop="5dp" />
 
         <TextView
             android:id="@+id/currentSongArtistName"
@@ -93,8 +97,8 @@
             android:layout_alignLeft="@id/currentSongName"
             android:layout_below="@id/currentSongName"
             android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:layout_marginBottom="10dp" />
+            android:textSize="17sp"
+            android:layout_marginBottom="2dp" />
 
     </RelativeLayout>
 

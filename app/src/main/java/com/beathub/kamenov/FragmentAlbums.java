@@ -6,11 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ListsFragment extends Fragment {
+public class FragmentAlbums extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.lists_fragment, null);
+        return inflater.inflate(R.layout.allsongs_list_fragment, container, false);
     }
-
 }

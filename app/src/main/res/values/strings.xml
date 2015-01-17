@@ -7,4 +7,11 @@
     <string name="title_activity_play_list">PlayListActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string-array name="context_menu_items">
+        <item>Add to Playlist</item>
+        <item>Ringtone</item>
+        <item>Send</item>
+        <item>Delete</item>
+    </string-array>
+
 </resources>

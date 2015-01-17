@@ -1,39 +1,39 @@
 package com.beathub.kamenov;
 
-import android.graphics.Bitmap;
-
 public class Song {
 	
 	private long id;
-    private String raw_name;
-    private String nameWithoutExt;
-    private long folder_id;
-    private long duration;
-    private long album_id;
-    private long artist_id;
+    private String path;
 	private String title;
 	private String artist;
-    private Bitmap artCover;
+    private long duration;
 	
-	public Song(long songID, String songTitle, String songArtist){
+	public Song(long id, String path, String songTitle, String songArtist, long duration){
 
-        this.id = songID;
+        this.id = id;
+        this.path = path;
         this.title = songTitle;
         this.artist = songArtist;
+        this.duration = duration;
 	}
 
-    public Song(long songID, Bitmap artCover, String songTitle, String songArtist){
-
-        this.id = songID;
-        this.artCover = artCover;
-        this.title = songTitle;
-        this.artist = songArtist;
+    public long getId() {
+        return id;
     }
-	
-	public long getID(){return id;}
-	public String getTitle(){return title;}
-	public String getArtist(){return artist;}
-    public Bitmap getArtCover() {
-        return artCover;
+
+    public String getPath() {
+        return path;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public long getDuration() {
+        return duration;
     }
 }
