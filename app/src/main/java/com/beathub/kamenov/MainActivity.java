@@ -1,9 +1,11 @@
 package com.beathub.kamenov;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -46,7 +48,7 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbTests();
+        firstInstalling();
 
         RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
         TextView songTitle = (TextView) findViewById(R.id.currentSongName);
@@ -105,6 +107,26 @@ public class MainActivity extends FragmentActivity {
                 break;*/
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void firstInstalling() {
+
+        SharedPreferences prefs = PreferenceManager .getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean("previouslyStarted", false);
+
+        if (!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean("previouslyStarted", Boolean.TRUE);
+            edit.commit();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    dbInit();
+                }
+            });
+
+        }
     }
 
     /**
@@ -201,7 +223,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    private void dbTests(){
+    private void dbInit(){
         db = new BeatHubBaseHelper(getApplicationContext());
 
         db.addFolderPath("storage/extSdCard/Music");
