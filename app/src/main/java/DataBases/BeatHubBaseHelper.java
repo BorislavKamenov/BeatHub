@@ -24,104 +24,104 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         super(context, DB_NAME, null, DATABASE_VERSION);
     }
 
-        //common column
-        private static final String COLUMN_ID = "_id";
+    //common column
+    private static final String COLUMN_ID = "_id";
 
-        //table folders
-        private static final String TABLE_NAME_FOLDERS = "folders";
-        private static final String COLUMN_FOLDER_NAME = "folder_name";
-        private static final String COLUMN_PATH = "path";
+    //table folders
+    private static final String TABLE_NAME_FOLDERS = "folders";
+    private static final String COLUMN_FOLDER_NAME = "folder_name";
+    private static final String COLUMN_PATH = "path";
 
-        protected static final String CREATE_STATEMENT_FOLDERS = " CREATE TABLE " + TABLE_NAME_FOLDERS + " ( " +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_FOLDER_NAME + " TEXT, " +
-                COLUMN_PATH + " TEXT " + " ) ";
-        protected static final String   UPDATE_STATEMENT_FOLDERS = " DELETE IF EXISTS TABLE " + TABLE_NAME_FOLDERS;
+    protected static final String CREATE_STATEMENT_FOLDERS = " CREATE TABLE " + TABLE_NAME_FOLDERS + " ( " +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_FOLDER_NAME + " TEXT, " +
+            COLUMN_PATH + " TEXT " + " ) ";
+    protected static final String UPDATE_STATEMENT_FOLDERS = " DELETE IF EXISTS TABLE " + TABLE_NAME_FOLDERS;
 
-        //table files
-        private static final String TABLE_NAME_FILES = "files";
-        private static final String COLUMN_RAW_NAME = "raw_name_file";
-        private static final String COLUMN_NAME_NO_EXT = "name_no_ext";
-        private static final String COLUMN_SONG_TITLE = "song_title";
-        private static final String COLUMN_FOLDER_ID = "folder_id";
-        private static final String COLUMN_DURATION = "duration_of_song";
-        private static final String COLUMN_ALBUM_ID = "album_id";
-        private static final String COLUMN_ARTIST_ID = "artist_id";
+    //table files
+    private static final String TABLE_NAME_FILES = "files";
+    private static final String COLUMN_RAW_NAME = "raw_name_file";
+    private static final String COLUMN_NAME_NO_EXT = "name_no_ext";
+    private static final String COLUMN_SONG_TITLE = "song_title";
+    private static final String COLUMN_FOLDER_ID = "folder_id";
+    private static final String COLUMN_DURATION = "duration_of_song";
+    private static final String COLUMN_ALBUM_ID = "album_id";
+    private static final String COLUMN_ARTIST_ID = "artist_id";
 
-        protected static final String CREATE_STATEMENT_FILES = " CREATE TABLE " + TABLE_NAME_FILES + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_RAW_NAME + " TEXT, " +
-                COLUMN_NAME_NO_EXT + " TEXT, " +
-                COLUMN_SONG_TITLE + " TEXT, " +
-                COLUMN_FOLDER_ID + " TEXT, " +
-                COLUMN_DURATION + " TEXT, " +
-                COLUMN_ALBUM_ID + " TEXT, " +
-                COLUMN_ARTIST_ID + " TEXT " + " ) ";
-        protected static final String UPDATE_STATEMENT_FILES = " DELETE IF EXISTS TABLE " + TABLE_NAME_FILES;
-
-
-        //table albums
-        private static final String TABLE_NAME_ALBUMS = "albums";
-        private static final String COLUMN_ALBUM_NAME = "album_name";
-        private static final String COLUMN_ARTIST_OF_ALBUM = "album_artist_name";
-
-        protected static final String CREATE_STATEMENT_ALBUMS = " CREATE TABLE " + TABLE_NAME_ALBUMS + " (" +
-                COLUMN_ID + " INTEGER , " +
-                COLUMN_ALBUM_NAME + " TEXT, " +
-                COLUMN_ARTIST_OF_ALBUM + " TEXT " + " ) ";
-        protected static final String UPDATE_STATEMENT_ALBUMS = " DELETE IF EXISTS TABLE " + TABLE_NAME_ALBUMS;
+    protected static final String CREATE_STATEMENT_FILES = " CREATE TABLE " + TABLE_NAME_FILES + " (" +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_RAW_NAME + " TEXT, " +
+            COLUMN_NAME_NO_EXT + " TEXT, " +
+            COLUMN_SONG_TITLE + " TEXT, " +
+            COLUMN_FOLDER_ID + " TEXT, " +
+            COLUMN_DURATION + " TEXT, " +
+            COLUMN_ALBUM_ID + " TEXT, " +
+            COLUMN_ARTIST_ID + " TEXT " + " ) ";
+    protected static final String UPDATE_STATEMENT_FILES = " DELETE IF EXISTS TABLE " + TABLE_NAME_FILES;
 
 
-        //table playlists
-        private static final String TABLE_NAME_PLAYLISTS = "playlists";
-        private static final String COLUMN_PLAYLIST_NAME = "list_name";
+    //table albums
+    private static final String TABLE_NAME_ALBUMS = "albums";
+    private static final String COLUMN_ALBUM_NAME = "album_name";
+    private static final String COLUMN_ARTIST_OF_ALBUM = "album_artist_name";
 
-        private static final String CREATE_STATEMENT_PLAYLISTS = " CREATE TABLE " + TABLE_NAME_PLAYLISTS + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_PLAYLIST_NAME + " TEXT " + " ) ";
-        protected static final String UPDATE_STATEMENT_PLAYLISTS = " DELETE IF EXISTS TABLE " +
-                TABLE_NAME_PLAYLISTS;
-
-
-        //table playlist entries
-        private static final String TABLE_NAME_PLAYLISTS_ENTRIES = "playlists_entries";
-        private static final String COLUMN_FILE_ID = "file_id";
-        private static final String COLUMN_PLAYLIST_ID = "playlist_id";
-        protected static final String CREATE_STATEMENT_PLAYLISTS_ENTRIES = " CREATE TABLE " + TABLE_NAME_PLAYLISTS_ENTRIES + " ( " +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_FILE_ID + " TEXT, " +
-                COLUMN_PLAYLIST_ID + " TEXT " + " ) ";
-
-        protected static final String UPDATE_STATEMENT_PLAYLISTS_ENTRIES = " DELETE IF EXISTS TABLE " +
-                TABLE_NAME_PLAYLISTS_ENTRIES;
+    protected static final String CREATE_STATEMENT_ALBUMS = " CREATE TABLE " + TABLE_NAME_ALBUMS + " (" +
+            COLUMN_ID + " INTEGER , " +
+            COLUMN_ALBUM_NAME + " TEXT, " +
+            COLUMN_ARTIST_OF_ALBUM + " TEXT " + " ) ";
+    protected static final String UPDATE_STATEMENT_ALBUMS = " DELETE IF EXISTS TABLE " + TABLE_NAME_ALBUMS;
 
 
-        //table artists
-        private static final String TABLE_NAME_ARTISTS = "artists";
-        private static final String COLUMN_ARTIST_NAME = "artist_name";
+    //table playlists
+    private static final String TABLE_NAME_PLAYLISTS = "playlists";
+    private static final String COLUMN_PLAYLIST_NAME = "list_name";
 
-        protected static final String CREATE_STATEMENT_ARTISTS = " CREATE TABLE " + TABLE_NAME_ARTISTS + " (" +
-                COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_ARTIST_NAME + " TEXT " + " ) ";
+    private static final String CREATE_STATEMENT_PLAYLISTS = " CREATE TABLE " + TABLE_NAME_PLAYLISTS + " (" +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_PLAYLIST_NAME + " TEXT " + " ) ";
+    protected static final String UPDATE_STATEMENT_PLAYLISTS = " DELETE IF EXISTS TABLE " +
+            TABLE_NAME_PLAYLISTS;
 
-        protected static final String UPDATE_STATEMENT_ARTISTS = " DELETE IF EXISTS TABLE " + TABLE_NAME_ARTISTS;
+
+    //table playlist entries
+    private static final String TABLE_NAME_PLAYLISTS_ENTRIES = "playlists_entries";
+    private static final String COLUMN_FILE_ID = "file_id";
+    private static final String COLUMN_PLAYLIST_ID = "playlist_id";
+    protected static final String CREATE_STATEMENT_PLAYLISTS_ENTRIES = " CREATE TABLE " + TABLE_NAME_PLAYLISTS_ENTRIES + " ( " +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_FILE_ID + " TEXT, " +
+            COLUMN_PLAYLIST_ID + " TEXT " + " ) ";
+
+    protected static final String UPDATE_STATEMENT_PLAYLISTS_ENTRIES = " DELETE IF EXISTS TABLE " +
+            TABLE_NAME_PLAYLISTS_ENTRIES;
 
 
-        public final String[] create_tables = {
-                CREATE_STATEMENT_FOLDERS,
-                CREATE_STATEMENT_FILES,
-                CREATE_STATEMENT_ALBUMS,
-                CREATE_STATEMENT_PLAYLISTS,
-                CREATE_STATEMENT_PLAYLISTS_ENTRIES,
-                CREATE_STATEMENT_ARTISTS};
+    //table artists
+    private static final String TABLE_NAME_ARTISTS = "artists";
+    private static final String COLUMN_ARTIST_NAME = "artist_name";
 
-        public final String[] update_tables = {
-                UPDATE_STATEMENT_FOLDERS,
-                UPDATE_STATEMENT_FILES,
-                UPDATE_STATEMENT_ALBUMS,
-                UPDATE_STATEMENT_PLAYLISTS,
-                UPDATE_STATEMENT_PLAYLISTS_ENTRIES,
-                UPDATE_STATEMENT_ARTISTS};
+    protected static final String CREATE_STATEMENT_ARTISTS = " CREATE TABLE " + TABLE_NAME_ARTISTS + " (" +
+            COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_ARTIST_NAME + " TEXT " + " ) ";
+
+    protected static final String UPDATE_STATEMENT_ARTISTS = " DELETE IF EXISTS TABLE " + TABLE_NAME_ARTISTS;
+
+
+    public final String[] create_tables = {
+            CREATE_STATEMENT_FOLDERS,
+            CREATE_STATEMENT_FILES,
+            CREATE_STATEMENT_ALBUMS,
+            CREATE_STATEMENT_PLAYLISTS,
+            CREATE_STATEMENT_PLAYLISTS_ENTRIES,
+            CREATE_STATEMENT_ARTISTS};
+
+    public final String[] update_tables = {
+            UPDATE_STATEMENT_FOLDERS,
+            UPDATE_STATEMENT_FILES,
+            UPDATE_STATEMENT_ALBUMS,
+            UPDATE_STATEMENT_PLAYLISTS,
+            UPDATE_STATEMENT_PLAYLISTS_ENTRIES,
+            UPDATE_STATEMENT_ARTISTS};
 
 
     @Override
@@ -140,7 +140,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void addFolderPath(String path){
+    public void addFolderPath(String path) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -152,44 +152,44 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    private String getFolderNameFromPath(String path){
+    private String getFolderNameFromPath(String path) {
 
-        for(int i = path.length() - 1; i >= 0; i--){
-            if(path.charAt(i) == '/'){
+        for (int i = path.length() - 1; i >= 0; i--) {
+            if (path.charAt(i) == '/') {
                 return path.substring(i + 1, path.length());
             }
         }
         return "No Folder";
     }
 
-    public void importFilesInDBByFolders(ContentResolver resolver){
+    public void importFilesInDBByFolders(ContentResolver resolver) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor folders = db.query(TABLE_NAME_FOLDERS, null, null, null, null, null, null);
 
-        if (folders.moveToFirst()){
-            do{
+        if (folders.moveToFirst()) {
+            do {
                 String path = folders.getString(folders.getColumnIndex(COLUMN_PATH));
                 long folder_id = folders.getLong(folders.getColumnIndex(COLUMN_ID));
 
                 insertAllFilesFromSingleFolderInDB(resolver, path, folder_id);
-            }while(folders.moveToNext());
+            } while (folders.moveToNext());
         }
 
         folders.close();
         db.close();
     }
 
-    private void insertAllFilesFromSingleFolderInDB(ContentResolver resolver, String path, long folder_id){
+    private void insertAllFilesFromSingleFolderInDB(ContentResolver resolver, String path, long folder_id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Uri musicUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String key = "%" + path + "%";
         Cursor songsInFolder = resolver.query(musicUri, null, MediaStore.Audio.Media.DATA + " like ? ", new String[]{key}, null);
 
-        if (songsInFolder.moveToFirst()){
-            do{
+        if (songsInFolder.moveToFirst()) {
+            do {
 
                 ContentValues values = new ContentValues();
 
@@ -211,7 +211,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
                 addArtistBySongs(artist_id, albumArtistName);
                 addAlbumBySongs(album_id, albumName, albumArtistName);
 
-            }while(songsInFolder.moveToNext());
+            } while (songsInFolder.moveToNext());
         }
 
         db.close();
@@ -220,7 +220,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
     /**
      * add the album for every song
      */
-    private void addAlbumBySongs(int id, String albumName, String albumArtistName){
+    private void addAlbumBySongs(int id, String albumName, String albumArtistName) {
 
         SQLiteDatabase db = getWritableDatabase();
 
@@ -229,7 +229,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                if(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)) == id){
+                if (cursor.getInt(cursor.getColumnIndex(COLUMN_ID)) == id) {
                     isContainAlbum = true;
                     break;
                 }
@@ -237,7 +237,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         }
 
         //if the album is already exist, doesn't add a duplicate
-        if(!isContainAlbum){
+        if (!isContainAlbum) {
 
             ContentValues values = new ContentValues();
             values.put(COLUMN_ID, id);
@@ -246,9 +246,10 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
             db.insert(TABLE_NAME_ALBUMS, null, values);
         }
+        cursor.close();
     }
 
-    private void addArtistBySongs(int id, String artistName){
+    private void addArtistBySongs(int id, String artistName) {
 
         SQLiteDatabase db = getWritableDatabase();
 
@@ -257,7 +258,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                if(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)) == id){
+                if (cursor.getInt(cursor.getColumnIndex(COLUMN_ID)) == id) {
                     isArtistExist = true;
                     break;
                 }
@@ -265,7 +266,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         }
 
         //if the artist is already exist, doesn't add a duplicate
-        if(!isArtistExist){
+        if (!isArtistExist) {
 
             ContentValues values = new ContentValues();
             values.put(COLUMN_ID, id);
@@ -273,9 +274,10 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
             db.insert(TABLE_NAME_ARTISTS, null, values);
         }
+        cursor.close();
     }
 
-    public ArrayList<Song> getAllSongs(){
+    public ArrayList<Song> getAllSongs() {
 
         SQLiteDatabase db = getReadableDatabase();
         ArrayList<Song> listOfSongs = new ArrayList<>();
@@ -324,10 +326,10 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
 
-        return  listOfSongs;
+        return listOfSongs;
     }
 
-    public void addPlaylist(String name){
+    public void addPlaylist(String name) {
 
         SQLiteDatabase db = getWritableDatabase();
 
@@ -338,7 +340,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public ArrayList<Playlist> getAllPlaylists(){
+    public ArrayList<Playlist> getAllPlaylists() {
 
         ArrayList<Playlist> playlists = new ArrayList<>();
 
@@ -357,7 +359,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         return playlists;
     }
 
-    public void addSongToPlaylist(int song_id, int playlist_id){
+    public void addSongToPlaylist(int song_id, int playlist_id) {
 
         SQLiteDatabase db = getWritableDatabase();
 
