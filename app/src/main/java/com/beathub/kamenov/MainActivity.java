@@ -4,14 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -50,8 +48,6 @@ public class MainActivity extends FragmentActivity {
         dbTests();
 
         RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
-        TextView songTitle = (TextView) findViewById(R.id.currentSongName);
-        TextView artistName = (TextView) findViewById(R.id.currentSongArtistName);
 
         if (savedInstanceState == null) {
             ArtCoverFragment artcoverFragment = new ArtCoverFragment();
@@ -206,7 +202,7 @@ public class MainActivity extends FragmentActivity {
     private void dbTests() {
         db = new BeatHubBaseHelper(getApplicationContext());
 // CHANGE FOR YOUR PHONE
-        db.addFolderPath(Environment.getExternalStorageDirectory() + "/Music/Black");
+        db.addFolderPath("/storage/sdcard/");
         db.importFilesInDBByFolders(getContentResolver());
     }
 }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -33,11 +34,30 @@ public class FragmentAllSongs extends Fragment {
     private Button buttonPlay;
     private Button buttonPrevious;
     private Button buttonNext;
+    private TextView currSongName;
+    private TextView currSongArtist;
+
+    private void setIdsForViews() {
+        setViewId(currSongName, R.id.currentSongName);
+        setViewId(currSongArtist, R.id.currentSongArtistName);
+        setViewId(buttonPlay, R.id.playButton);
+        setViewId(buttonNext, R.id.nextButton);
+        setViewId(buttonPrevious, R.id.previousButton);
+        setViewId(listView, R.id.listview_songs_playlists);
+    }
+
+    protected void setViewId(View view, int id) {
+        view = (View) getActivity().findViewById(id);
+    }
+
+    protected void setListOfSongs() {
+
+
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (((MainActivity) getActivity()).getSongList() == null) {
             db = new BeatHubBaseHelper(getActivity().getApplicationContext());
             songs = db.getAllSongs();
@@ -46,23 +66,11 @@ public class FragmentAllSongs extends Fragment {
             songs = ((MainActivity) getActivity()).getSongList();
         }
 
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.listview_layout, container, false);
-
-        setListOfAllSongs(view);
-        buttonPlay = (Button) getActivity().findViewById(R.id.button_play);
-        buttonPrevious = (Button) listView.findViewById(R.id.button_previous);
-        buttonNext = (Button) listView.findViewById(R.id.button_next);
-
-        return view;
-    }
-
-    private void setListOfAllSongs(View view) {
-        listView = (ListView) view.findViewById(R.id.listview_songs_playlists);
         songAdapter = new SongAdapter(getActivity().getApplicationContext(), R.layout.song_simple_row_item, songs);
         songs.addAll(db.getAllSongs());
         songAdapter.addAll(songs);
@@ -97,7 +105,48 @@ public class FragmentAllSongs extends Fragment {
                 }
             }
         });
+        return view;
     }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Song song = songs.get(position);
+                currSongName.setText(song.getTitle());
+                currSongArtist.setText(song.getArtist());
+
+                try {
+                    if (mp.isPlaying()) {
+                        mp.reset();
+
+
+                    }
+                    File f = new File(song.getPath());
+                    FileInputStream fileIS = null;
+                    FileDescriptor fd = null;
+                    fileIS = new FileInputStream(f);
+                    fd = fileIS.getFD();
+                    mp.setDataSource(fd);
+                    mp.prepare();
+                    mp.start();
+
+                    //buttonPlay.setBackgroundResource(R.drawable.pause_button_selector);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.i(getString(R.string.app_name), e.getMessage());
+                }
+            }
+        });
+
+
+    }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo
