@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -48,11 +47,9 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        firstInstalling();
+        dbTests();
 
         RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
-        TextView songTitle = (TextView) findViewById(R.id.currentSongName);
-        TextView artistName = (TextView) findViewById(R.id.currentSongArtistName);
 
         if (savedInstanceState == null) {
             ArtCoverFragment artcoverFragment = new ArtCoverFragment();
@@ -109,6 +106,7 @@ public class MainActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
     private void firstInstalling() {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -131,6 +129,7 @@ public class MainActivity extends FragmentActivity {
 
     /**
      * Downsampling algorithm for an artcover images
+     *
      * @param options
      * @param reqWidth  new width of the image
      * @param reqHeight new height of the image
@@ -223,10 +222,10 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    private void dbInit(){
+    private void dbTests() {
         db = new BeatHubBaseHelper(getApplicationContext());
-
-        db.addFolderPath("storage/extSdCard/Music");
+// CHANGE FOR YOUR PHONE
+        db.addFolderPath("/storage/extSdCard/Music");
         db.importFilesInDBByFolders(getContentResolver());
 //        File file = Environment.getExternalStorageDirectory();
 //        String path = file.getAbsolutePath();
