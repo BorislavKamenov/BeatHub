@@ -17,12 +17,28 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/currentSongListView">
-        
-        <SeekBar
-            android:layout_width="match_parent"
+
+        <TextView
+            android:id="@+id/current_song_duration"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/playButton"
-            android:thumb="@drawable/progress_bar_circle"/>
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="#FFFFFF"/>
+
+        <TextView
+            android:id="@+id/total_song_duration"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:textColor="#FFFFFF"/>
 
         <Button
             android:id="@+id/playButton"
@@ -30,9 +46,7 @@
             android:layout_height="75dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/play_button_selector"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp" />
+            android:layout_marginTop="40dp"/>
 
         <Button
             android:id="@+id/previousButton"
@@ -82,24 +96,52 @@
 
         <TextView
             android:id="@+id/currentSongName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:layout_marginLeft="30dp"
-            android:layout_marginTop="5dp" />
+            android:layout_marginTop="-2dp"
+            android:lines="1"
+            android:layout_toLeftOf="@+id/numberOfSongInList"/>
 
         <TextView
             android:id="@+id/currentSongArtistName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/currentSongName"
+            android:layout_toLeftOf="@+id/numberOfSongInList"
             android:layout_below="@id/currentSongName"
             android:textColor="#FFFFFF"
             android:textSize="17sp"
-            android:layout_marginBottom="2dp" />
+            android:lines="1"
+            android:layout_marginBottom="7dp" />
+
+        <TextView
+            android:id="@+id/numberOfSongInList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@id/currentSongName"
+            android:layout_marginRight="5dp"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
+            android:lines="1"/>
 
     </RelativeLayout>
+
+    <SeekBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/player_controls_container"
+        android:thumb="@drawable/thumb_circle"
+        android:progressDrawable="@drawable/seekbar_progress"
+        android:layout_marginBottom="-10dp"
+        android:maxHeight="3dp"
+        android:paddingRight="0dp"
+        android:paddingLeft="0dp"
+        android:progress="20"/>
 
 </RelativeLayout>

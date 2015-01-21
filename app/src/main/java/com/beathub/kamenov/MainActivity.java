@@ -4,20 +4,30 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import DataBases.BeatHubBaseHelper;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements MediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener{
 
     public final static int PAGES = 10;
     public final static int LOOPS = 10;
@@ -33,7 +43,6 @@ public class MainActivity extends FragmentActivity {
     public void setSongList(ArrayList<Song> songList) {
         this.songList = songList;
     }
-
     public ArrayList<Song> getSongList() {
         return songList;
     }
@@ -42,12 +51,40 @@ public class MainActivity extends FragmentActivity {
     private boolean isBackSide = false;
     private BeatHubBaseHelper db;
 
+    //media player controllers
+    private MediaPlayer mediaPlayer = new MediaPlayer();
+    private Handler handler = new Handler();
+    private int currentPlayingSongPosition;
+    private TextView currentDurationLabel;
+    private TextView totalDurationLabel;
+    private SeekBar progressBar;
+    private Button buttonPlay;
+    private Button buttonPrevious;
+    private Button buttonNext;
+
+    private TextView currSongName;
+    private TextView currSongArtist;
+    private TextView numberOfSong;
+
+    private int seekForwardTime = 5000; // 5000 milliseconds
+    private int seekBackwardTime = 5000;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         dbTests();
+        setIdsForViews();
+
+        progressBar.setOnSeekBarChangeListener(this);
+        mediaPlayer.setOnCompletionListener(this);
+
+        // By default play first song
+        playSong(0);
+        buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
 
         RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
 
@@ -67,7 +104,120 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-        //set default fragment
+        buttonPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!mediaPlayer.isPlaying()) {
+                    if (mediaPlayer != null) {
+                        mediaPlayer.start();
+                        buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
+                    }
+
+                } else {
+                    if (mediaPlayer != null) {
+                        mediaPlayer.pause();
+                        // Changing button image to pause button
+                        buttonPlay.setBackgroundResource(R.drawable.play_button_default);
+                    }
+                }
+            }
+        });
+
+        buttonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (currentPlayingSongPosition < songList.size() - 1) {
+                    playSong(currentPlayingSongPosition + 1);
+                } else {
+                    //play first song
+                    playSong(0);
+                    currentPlayingSongPosition = 0;
+                }
+            }
+        });
+
+        buttonPrevious.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (currentPlayingSongPosition > 0) {
+                    playSong(currentPlayingSongPosition - 1);
+                } else {
+                    playSong(songList.size() - 1);
+                    currentPlayingSongPosition = songList.size() - 1;
+                }
+            }
+        });
+    }
+
+
+        public void updateProgressBar() {
+            handler.postDelayed(mUpdateTimeTask, 100);
+        }
+
+        /**
+         * Background Runnable thread
+         * */
+        private Runnable mUpdateTimeTask = new Runnable() {
+            public void run() {
+                long totalDuration = mediaPlayer.getDuration();
+                long currentDuration = mediaPlayer.getCurrentPosition();
+
+                // Displaying Total Duration time
+                totalDurationLabel.setText(Utils.durationFormat(totalDuration));
+                // Displaying time completed playing
+                currentDurationLabel.setText(Utils.durationFormat(currentDuration));
+
+                // Updating progress bar
+                int progress = (Utils.getProgressPercentage(currentDuration, totalDuration));
+                //Log.d("Progress", ""+progress);
+                progressBar.setProgress(progress);
+
+                // Running this thread after 100 milliseconds
+                handler.postDelayed(this, 100);
+            }
+        };
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+        }
+
+         /**
+         * When user starts moving the progress handler
+         * */
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+            handler.removeCallbacks(mUpdateTimeTask);
+        }
+
+         /**
+         * When user stops moving the progress hanlder
+         * */
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            handler.removeCallbacks(mUpdateTimeTask);
+            int totalDuration = mediaPlayer.getDuration();
+            int currentPosition = Utils.progressToTimer(seekBar.getProgress(), totalDuration);
+
+            // forward or backward to certain seconds
+            mediaPlayer.seekTo(currentPosition);
+
+            // update timer progress again
+            updateProgressBar();
+        }
+
+         @Override
+          public void onCompletion(MediaPlayer player) {
+             player.reset();
+             playSong(currentPlayingSongPosition + 1);
+
+          }
+
+
+    //set default fragment
 
 
 //        pager = (ViewPager) findViewById(R.id.myviewpager);
@@ -81,7 +231,6 @@ public class MainActivity extends FragmentActivity {
 //        pager.setOffscreenPageLimit(2);
 //        pager.setPageMargin(10);
 
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -234,5 +383,52 @@ public class MainActivity extends FragmentActivity {
 //        Log.i("path2", path2);
 
 
+    }
+
+    public void playSong(int position){
+
+        currentPlayingSongPosition = position;
+
+        if(songList == null){
+            songList = db.getAllSongs();
+        }
+        Song s = songList.get(position);
+        currSongName.setText(s.getTitle());
+        currSongArtist.setText(s.getArtist());
+        numberOfSong.setText((position + 1) + "/" + songList.size());
+
+        try {
+            //if (mediaPlayer.isPlaying()) {
+                mediaPlayer.reset();
+            //}
+            File f = new File(s.getPath());
+            FileInputStream fileIS = new FileInputStream(f);
+            FileDescriptor fd = fileIS.getFD();
+            mediaPlayer.setDataSource(fd);
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+
+            progressBar.setMax(100);
+            progressBar.setProgress(0);
+
+            updateProgressBar();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.i(getString(R.string.app_name), e.getMessage());
+        }
+    }
+
+    private void setIdsForViews() {
+
+        progressBar = (SeekBar) findViewById(R.id.progress_bar);
+        currSongName = (TextView) findViewById(R.id.currentSongName);
+        currSongArtist = (TextView) findViewById(R.id.currentSongArtistName);
+        numberOfSong = (TextView) findViewById(R.id.numberOfSongInList);
+        buttonPlay = (Button) findViewById(R.id.playButton);
+        buttonNext = (Button) findViewById(R.id.nextButton);
+        buttonPrevious = (Button) findViewById(R.id.previousButton);
+        currentDurationLabel = (TextView) findViewById(R.id.current_song_duration);
+        totalDurationLabel = (TextView) findViewById(R.id.total_song_duration);
     }
 }

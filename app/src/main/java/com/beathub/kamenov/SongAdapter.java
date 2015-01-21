@@ -48,24 +48,12 @@ public class SongAdapter extends ArrayAdapter<Song>{
 
         helper.songTitle.setText(song.getTitle());
         helper.artistName.setText(song.getArtist());
-        helper.songDuration.setText(durationFormat(song.getDuration()));
+        helper.songDuration.setText(Utils.durationFormat(song.getDuration()));
 
         return view;
     }
 
-    private String durationFormat(long duration){
 
-        long res = duration / 1000;
-
-        int hours = (int) res / 3600;
-        int minutes = (int) (res / 60) % 60;
-        int seconds = (int) res % 60;
-
-        if(hours == 0){
-            return String.format("%02d:%02d", minutes, seconds);
-        }
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-    }
 
     class ViewHelper{
 
