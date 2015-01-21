@@ -111,7 +111,7 @@ public class MainActivity extends FragmentActivity {
 
     private void firstInstalling() {
 
-        SharedPreferences prefs = PreferenceManager .getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean("previouslyStarted", false);
 
         if (!previouslyStarted) {
@@ -122,11 +122,11 @@ public class MainActivity extends FragmentActivity {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    dbInit();
+                    //dbInit();
                 }
             });
-
         }
+
     }
 
     /**
@@ -228,5 +228,12 @@ public class MainActivity extends FragmentActivity {
 
         db.addFolderPath("storage/extSdCard/Music");
         db.importFilesInDBByFolders(getContentResolver());
+//        File file = Environment.getExternalStorageDirectory();
+//        String path = file.getAbsolutePath();
+//        String path2 = file.toString();
+//        Log.i("path", path);
+//        Log.i("path2", path2);
+
+
     }
 }
