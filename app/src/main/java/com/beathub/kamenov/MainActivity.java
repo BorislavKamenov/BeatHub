@@ -76,14 +76,17 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dbTests();
+        db = new BeatHubBaseHelper(getApplicationContext());
+        //dbTests();
         setIdsForViews();
+
+        firstInstalling();
 
         progressBar.setOnSeekBarChangeListener(this);
         mediaPlayer.setOnCompletionListener(this);
 
         // By default play first song
-        playSong(0);
+        playSong(indexOfLastPlayedSong());
         buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
 
         RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
@@ -152,8 +155,13 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         });
     }
 
+    @Override
+    protected void onPause() {
+        saveLastPlayedSong(currentPlayingSongPosition);
+        super.onPause();
+    }
 
-        public void updateProgressBar() {
+    public void updateProgressBar() {
             handler.postDelayed(mUpdateTimeTask, 100);
         }
 
@@ -266,13 +274,28 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
             edit.putBoolean("previouslyStarted", Boolean.TRUE);
             edit.commit();
 
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    //dbInit();
-                }
-            });
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+                    dbInit();
+//                }
+//            });
         }
+    }
+
+    private int indexOfLastPlayedSong(){
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        int lastPlayedSong = prefs.getInt("lastSong", 0);
+        return lastPlayedSong;
+    }
+
+    private void saveLastPlayedSong(int position){
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putInt("lastSong", position);
+        edit.commit();
 
     }
 
@@ -319,8 +342,10 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         metaRetriever.setDataSource(filePath);
 
         byte[] art = metaRetriever.getEmbeddedPicture();
+
         if (art == null) {
-            return BitmapFactory.decodeResource(getResources(), R.drawable.play);
+            //return default artCover (app logo)
+            return BitmapFactory.decodeResource(getResources(), R.drawable.asd);
         }
 
 
@@ -371,19 +396,14 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         }
     }
 
-    private void dbTests() {
-        db = new BeatHubBaseHelper(getApplicationContext());
-// CHANGE FOR YOUR PHONE
+    private void dbInit() {
+
+        // CHANGE FOR YOUR PHONE
         db.addFolderPath("/storage/extSdCard/Music");
         db.importFilesInDBByFolders(getContentResolver());
-//        File file = Environment.getExternalStorageDirectory();
-//        String path = file.getAbsolutePath();
-//        String path2 = file.toString();
-//        Log.i("path", path);
-//        Log.i("path2", path2);
-
-
     }
+
+
 
     public void playSong(int position){
 
@@ -413,6 +433,8 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
             updateProgressBar();
 
+            buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
+
         } catch (IOException e) {
             e.printStackTrace();
             Log.i(getString(R.string.app_name), e.getMessage());
@@ -431,4 +453,6 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         currentDurationLabel = (TextView) findViewById(R.id.current_song_duration);
         totalDurationLabel = (TextView) findViewById(R.id.total_song_duration);
     }
+
+
 }
