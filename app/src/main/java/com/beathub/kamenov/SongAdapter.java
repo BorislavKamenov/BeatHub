@@ -53,8 +53,6 @@ public class SongAdapter extends ArrayAdapter<Song>{
         return view;
     }
 
-
-
     class ViewHelper{
 
         TextView songTitle;

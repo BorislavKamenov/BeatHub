@@ -1,16 +1,11 @@
 package com.beathub.kamenov;
 
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,24 +22,20 @@ import java.util.ArrayList;
 
 import DataBases.BeatHubBaseHelper;
 
-public class MainActivity extends FragmentActivity implements MediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener{
+public class MainActivity extends FragmentActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener{
 
-    public final static int PAGES = 10;
-    public final static int LOOPS = 10;
-    public final static int FIRST_PAGE = 0;
-    public final static float BIG_SCALE = 1.0f;
-    public final static float SMALL_SCALE = 0.8f;
-    public final static float DIFF_SCALE = BIG_SCALE - SMALL_SCALE;
-
-    public MyPagerAdapter adapter;
-    public ViewPager pager;
     public ArrayList<Song> songList;
+    public Song currentPlaylingSong;
 
     public void setSongList(ArrayList<Song> songList) {
         this.songList = songList;
     }
     public ArrayList<Song> getSongList() {
         return songList;
+    }
+
+    public int getCurrentPlayingSongPosition() {
+        return currentPlayingSongPosition;
     }
 
     //card flip
@@ -69,7 +60,13 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private int seekForwardTime = 5000; // 5000 milliseconds
     private int seekBackwardTime = 5000;
 
+    public Song getCurrentPlaylingSong() {
+        return currentPlaylingSong;
+    }
 
+    public void setCurrentPlaylingSong(Song currentPlaylingSong) {
+        this.currentPlaylingSong = currentPlaylingSong;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +74,6 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         setContentView(R.layout.activity_main);
 
         db = new BeatHubBaseHelper(getApplicationContext());
-        //dbTests();
         setIdsForViews();
 
         firstInstalling();
@@ -92,7 +88,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
 
         if (savedInstanceState == null) {
-            ArtCoverFragment artcoverFragment = new ArtCoverFragment();
+            MainArtCoverFragment artcoverFragment = new MainArtCoverFragment();
 
             getFragmentManager()
                     .beginTransaction()
@@ -130,27 +126,14 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (currentPlayingSongPosition < songList.size() - 1) {
-                    playSong(currentPlayingSongPosition + 1);
-                } else {
-                    //play first song
-                    playSong(0);
-                    currentPlayingSongPosition = 0;
-                }
+                playNextSong();
             }
         });
 
         buttonPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (currentPlayingSongPosition > 0) {
-                    playSong(currentPlayingSongPosition - 1);
-                } else {
-                    playSong(songList.size() - 1);
-                    currentPlayingSongPosition = songList.size() - 1;
-                }
+                playPrevSong();
             }
         });
     }
@@ -220,25 +203,8 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
          @Override
           public void onCompletion(MediaPlayer player) {
              player.reset();
-             playSong(currentPlayingSongPosition + 1);
-
+             playNextSong();
           }
-
-
-    //set default fragment
-
-
-//        pager = (ViewPager) findViewById(R.id.myviewpager);
-//
-//        adapter = new MyPagerAdapter(this, this.getSupportFragmentManager());
-//        pager.setAdapter(adapter);
-//        pager.setOnPageChangeListener(adapter);
-//
-//        pager.setCurrentItem(FIRST_PAGE);
-//
-//        pager.setOffscreenPageLimit(2);
-//        pager.setPageMargin(10);
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -291,72 +257,10 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     }
 
     private void saveLastPlayedSong(int position){
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         SharedPreferences.Editor edit = prefs.edit();
         edit.putInt("lastSong", position);
         edit.commit();
-
-    }
-
-    /**
-     * Downsampling algorithm for an artcover images
-     *
-     * @param options
-     * @param reqWidth  new width of the image
-     * @param reqHeight new height of the image
-     * @return
-     */
-    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
-
-    /**
-     * Get ArtCover image from the metadata of audio file
-     *
-     * @param filePath - absolute path of the current audio file
-     * @return Bitmap
-     */
-    public Bitmap getAlbumArtCover(String filePath) {
-
-        MediaMetadataRetriever metaRetriever;
-        metaRetriever = new MediaMetadataRetriever();
-        metaRetriever.setDataSource(filePath);
-
-        byte[] art = metaRetriever.getEmbeddedPicture();
-
-        if (art == null) {
-            //return default artCover (app logo)
-            return BitmapFactory.decodeResource(getResources(), R.drawable.asd);
-        }
-
-
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeByteArray(art, 0, art.length, options);
-
-        options.inSampleSize = calculateInSampleSize(options, 50, 50);
-
-        options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeByteArray(art, 0, art.length, options);
     }
 
     //card flip animation
@@ -386,7 +290,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                             R.animator.card_flip_right_in, R.animator.card_flip_right_out,
                             R.animator.card_flip_left_in, R.animator.card_flip_left_out)
 
-                    .replace(R.id.fragments_container, new ArtCoverFragment())
+                    .replace(R.id.fragments_container, new MainArtCoverFragment())
 
                     .addToBackStack(null)
 
@@ -404,41 +308,77 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     }
 
 
+    @Override
+    public void onPrepared(MediaPlayer player) {
+        player.start();
+    }
 
     public void playSong(int position){
 
         currentPlayingSongPosition = position;
 
+
         if(songList == null){
             songList = db.getAllSongs();
         }
         Song s = songList.get(position);
+
+        setCurrentPlaylingSong(s);
+
         currSongName.setText(s.getTitle());
         currSongArtist.setText(s.getArtist());
         numberOfSong.setText((position + 1) + "/" + songList.size());
 
         try {
-            //if (mediaPlayer.isPlaying()) {
-                mediaPlayer.reset();
-            //}
+            mediaPlayer.reset();
             File f = new File(s.getPath());
             FileInputStream fileIS = new FileInputStream(f);
             FileDescriptor fd = fileIS.getFD();
             mediaPlayer.setDataSource(fd);
+            //mediaPlayer.setOnPreparedListener(this);
+            //mediaPlayer.prepareAsync();
             mediaPlayer.prepare();
             mediaPlayer.start();
-
             progressBar.setMax(100);
             progressBar.setProgress(0);
 
             updateProgressBar();
 
+            //set pause image
             buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
 
+            //flip the view
+            if(isBackSide){
+                flipCard();
+            }
+
         } catch (IOException e) {
-            e.printStackTrace();
-            Log.i(getString(R.string.app_name), e.getMessage());
+            //e.printStackTrace();
+            //Log.i(getString(R.string.app_name), e.getMessage());
         }
+    }
+
+    public void playNextSong(){
+        if (currentPlayingSongPosition < songList.size() - 1) {
+            int pos = currentPlayingSongPosition;
+            playSong(pos + 1);
+        } else {
+            //play first song
+            playSong(0);
+            currentPlayingSongPosition = 0;
+        }
+        refreshArtCoverFragment();
+    }
+
+    public void playPrevSong(){
+        if (currentPlayingSongPosition > 0) {
+            int pos = currentPlayingSongPosition;
+            playSong(pos - 1);
+        } else {
+            playSong(songList.size() - 1);
+            currentPlayingSongPosition = songList.size() - 1;
+        }
+        refreshArtCoverFragment();
     }
 
     private void setIdsForViews() {
@@ -454,5 +394,20 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         totalDurationLabel = (TextView) findViewById(R.id.total_song_duration);
     }
 
+    private void refreshArtCoverFragment(){
+
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+
+                .replace(R.id.fragments_container, new MainArtCoverFragment())
+
+                .addToBackStack(null)
+
+                        // Commit the transaction.
+                .commit();
+    }
 
 }
