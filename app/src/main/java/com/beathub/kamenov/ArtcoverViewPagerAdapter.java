@@ -1,34 +1,31 @@
 package com.beathub.kamenov;
 
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 
 import com.nineoldandroids.view.ViewHelper;
 
-public class MyPagerAdapter extends FragmentPagerAdapter implements
+public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
 ViewPager.OnPageChangeListener {
 
-
-
-	private boolean swipedLeft=false;
-	private int lastPage=9;
+	private boolean swipedLeft = false;
+	private int lastPage;
 	private MyLinearLayout cur = null;
 	private MyLinearLayout next = null;
 	private MyLinearLayout prev = null;
 	private MyLinearLayout prevprev = null;
 	private MyLinearLayout nextnext = null;
-	private MainActivity context;
+	private MainArtCoverFragment context;
 	private FragmentManager fm;
 	private float scale;
 	private boolean IsBlured;
 	private static float minAlpha=0.6f;
 	private static float maxAlpha=1f;
 	private static float minDegree=60.0f;
-	private int counter=0;
+	private int lastPosition = -1;
 
 	public static float getMinDegree()
 	{
@@ -43,47 +40,60 @@ ViewPager.OnPageChangeListener {
 		return maxAlpha;
 	}
 	
-	public MyPagerAdapter(MainActivity context, FragmentManager fm) {
+	public ArtcoverViewPagerAdapter(MainArtCoverFragment context, FragmentManager fm) {
 		super(fm);
 		this.fm = fm;
 		this.context = context;
+
+        //initialise lastpage
+        this.lastPage = ((MainActivity)context.getActivity()).getSongList().size() - 1;
 	}
 
 	@Override
 	public Fragment getItem(int position) 
 	{
 		// make the first pager bigger than others
-		if (position == MainActivity.FIRST_PAGE)
-			scale = MainActivity.BIG_SCALE;     	
+		if (position == MainArtCoverFragment.FIRST_PAGE)
+			scale = MainArtCoverFragment.BIG_SCALE;
 		else
 		{
-			scale = MainActivity.SMALL_SCALE;
+			scale = MainArtCoverFragment.SMALL_SCALE;
 			IsBlured=true;
 
 		}
 
-		Log.d("position", String.valueOf(position));
-		Fragment curFragment= MyFragment.newInstance(context, position, scale,IsBlured);
+		Fragment curFragment= ArtCoverContentFragment.newInstance(context, position, scale, IsBlured);
 		cur = getRootView(position);
 		next = getRootView(position +1);
 		prev = getRootView(position -1);
+
+//        if(lastPosition != position){
+//
+//            if(lastPosition > position){
+//                ((MainActivity)context.getActivity()).playPrevSong();
+//            }else if(lastPosition < position){
+//                ((MainActivity)context.getActivity()).playNextSong();
+//            }
+//
+//        }
+//
+//        lastPosition = position;
 
 		return curFragment;
 	}
 
 	@Override
 	public int getCount()
-	{		
-		return 10;
+	{
+		return ((MainActivity)context.getActivity()).getSongList().size();
 	}
 
 	@Override
-	public void onPageScrolled(int position, float positionOffset,
-			int positionOffsetPixels) 
-	{	
+	public void onPageScrolled(int position, float positionOffset,int positionOffsetPixels){
+
 		if (positionOffset >= 0f && positionOffset <= 1f)
 		{
-			positionOffset=positionOffset*positionOffset;
+			positionOffset = positionOffset * positionOffset;
 			cur = getRootView(position);
 			next = getRootView(position +1);
 			prev = getRootView(position -1);
@@ -101,16 +111,16 @@ ViewPager.OnPageChangeListener {
 			}
 			if(cur!=null)
 			{
-				cur.setScaleBoth(MainActivity.BIG_SCALE 
-						- MainActivity.DIFF_SCALE * positionOffset);
+				cur.setScaleBoth(MainArtCoverFragment.BIG_SCALE
+						- MainArtCoverFragment.DIFF_SCALE * positionOffset);
 
 				ViewHelper.setRotationY(cur, 0);
 			}
 
 			if(next!=null)
 			{
-				next.setScaleBoth(MainActivity.SMALL_SCALE 
-						+ MainActivity.DIFF_SCALE * positionOffset);
+				next.setScaleBoth(MainArtCoverFragment.SMALL_SCALE
+						+ MainArtCoverFragment.DIFF_SCALE * positionOffset);
 				ViewHelper.setRotationY(next, -minDegree);
 			}
 			if(prev!=null)
@@ -118,7 +128,7 @@ ViewPager.OnPageChangeListener {
 				ViewHelper.setRotationY(prev, minDegree);
 			}
 
-			
+
 			/*To animate it properly we must understand swipe direction
 			 * this code adjusts the rotation according to direction.
 			 */
@@ -128,6 +138,7 @@ ViewPager.OnPageChangeListener {
 					ViewHelper.setRotationY(next, -minDegree+minDegree*positionOffset);
 				if(cur!=null)
 					ViewHelper.setRotationY(cur, 0+minDegree*positionOffset);
+
 			}
 			else 
 			{
@@ -137,6 +148,7 @@ ViewPager.OnPageChangeListener {
 				{
 					ViewHelper.setRotationY(cur, 0+minDegree*positionOffset);
 				}
+
 			}
 		}
 		if(positionOffset>=1f)
@@ -151,32 +163,31 @@ ViewPager.OnPageChangeListener {
 /*
  * to get finger swipe direction
  */
-		if(lastPage<=position)
+		if(lastPage <= position)
 		{
-			swipedLeft=true;
+			swipedLeft = true;
+
 		}
-		else if(lastPage>position)
+		else if(lastPage > position)
 		{
-			swipedLeft=false;
+			swipedLeft = false;
 		}
-		lastPage=position;
+		lastPage = position;
+
 	}
 
 	@Override
 	public void onPageScrollStateChanged(int state) {
 	}
 
+	private MyLinearLayout getRootView(int position){
 
-
-	private MyLinearLayout getRootView(int position)
-	{
 		MyLinearLayout ly;
 		try {
 			ly = (MyLinearLayout) 
-					fm.findFragmentByTag(this.getFragmentTag(position))
-					.getView().findViewById(R.id.root);
+					fm.findFragmentByTag(this.getFragmentTag(position)).getView().findViewById(R.id.animated_view_pager);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			return null;
 		}
 		if(ly!=null)
@@ -184,8 +195,8 @@ ViewPager.OnPageChangeListener {
 		return null;
 	}
 
-	private String getFragmentTag(int position)
-	{
-		return "android:switcher:" + context.pager.getId() + ":" + position;
+	private String getFragmentTag(int position){
+
+		return "android:switcher:" + context.viewPager.getId() + ":" + position;
 	}
 }
