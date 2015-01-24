@@ -86,6 +86,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         setContentView(R.layout.activity_main);
 
         db = new BeatHubBaseHelper(getApplicationContext());
+        db.addPlaylist("RAP");
         setIdsForViews();
 
         firstInstalling();
@@ -499,6 +500,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
         TextView textView = (TextView) layout.findViewById(R.id.toast_text_view);
         textView.setText(message);
+
 
         Toast toast = new Toast(this);
         toast.setView(layout);

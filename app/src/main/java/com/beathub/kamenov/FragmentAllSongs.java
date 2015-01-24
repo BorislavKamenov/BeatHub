@@ -76,7 +76,7 @@ public class FragmentAllSongs extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity)getActivity()).playSong(position);
+                ((MainActivity) getActivity()).playSong(position);
                 Log.i("FragmentAllSongs clicked position in listview", position + "");
             }
         });
@@ -109,6 +109,7 @@ public class FragmentAllSongs extends Fragment {
             case 0:
                 positionText = menuItems[menuItemIndex];
                 Toast.makeText(getActivity().getApplicationContext(), positionText, Toast.LENGTH_LONG).show();
+                MainListsFragment.addToPlayListDialog(getActivity());
             case 1:
                 positionText = menuItems[menuItemIndex];
                 Toast.makeText(getActivity().getApplicationContext(), positionText, Toast.LENGTH_LONG).show();
