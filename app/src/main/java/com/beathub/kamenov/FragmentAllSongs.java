@@ -43,10 +43,10 @@ public class FragmentAllSongs extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.listview_layout, container, false);
+        View view = inflater.inflate(R.layout.allplaylilsts_fragment, container, false);
 
 
-        listView = (ListView) view.findViewById(R.id.listview_songs_playlists);
+        listView = (ListView) view.findViewById(R.id.all_playlists_listview_in_fragment);
         //songs = db.getAllSongs();
         songAdapter = new SongAdapter(getActivity().getApplicationContext(), R.layout.song_simple_row_item, songs);
         listView.setAdapter(songAdapter);
@@ -88,7 +88,7 @@ public class FragmentAllSongs extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
-        if (v.getId() == R.id.listview_songs_playlists) {
+        if (v.getId() == R.id.all_playlists_listview_in_fragment) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             String[] menuItems = getResources().getStringArray(R.array.context_menu_items);
 
@@ -108,8 +108,9 @@ public class FragmentAllSongs extends Fragment {
         switch (menuItemIndex) {
             case 0:
                 positionText = menuItems[menuItemIndex];
-                Toast.makeText(getActivity().getApplicationContext(), positionText, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getActivity().getApplicationContext(), positionText, Toast.LENGTH_LONG).show();
                 MainListsFragment.addToPlayListDialog(getActivity());
+
             case 1:
                 positionText = menuItems[menuItemIndex];
                 Toast.makeText(getActivity().getApplicationContext(), positionText, Toast.LENGTH_LONG).show();

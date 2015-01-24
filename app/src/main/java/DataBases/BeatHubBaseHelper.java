@@ -348,6 +348,8 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(TABLE_NAME_PLAYLISTS, null, null, null, null, null, null);
 
+        cursor.moveToPosition(1);
+
         String playlistName = cursor.getString(cursor.getColumnIndex(COLUMN_PLAYLIST_NAME));
 
         Playlist playlist = new Playlist(playlistName);

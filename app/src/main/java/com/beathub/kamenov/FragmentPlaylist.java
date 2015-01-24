@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import DataBases.BeatHubBaseHelper;
+
 public class FragmentPlaylist extends Fragment {
 
     private ListView list = null;
@@ -14,12 +16,11 @@ public class FragmentPlaylist extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.listview_layout, container, false);
+        View view = inflater.inflate(R.layout.allplaylilsts_fragment, container, false);
 
-        //list = (ListView) view.findViewById(R.id.listview_playlists);
-
-        //some logic
-
+        ListView listViewPlaylists = (ListView) view.findViewById(R.id.playlists_listView);
+        /*PlaylistsAdapter playlistsAdapter = new PlaylistsAdapter(getActivity(), R.layout.playlist_simple_row_item, new BeatHubBaseHelper(getActivity()).getAllPlaylists());
+        listViewPlaylists.setAdapter(playlistsAdapter);*/
         return view;
     }
 }

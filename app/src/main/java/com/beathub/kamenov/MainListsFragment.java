@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import DataBases.BeatHubBaseHelper;
 
@@ -27,23 +28,20 @@ public class MainListsFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
     protected static void addToPlayListDialog(Activity activity) {
-    /*    PlaylistsAdapter playlistsAdapter = new PlaylistsAdapter(activity.getApplicationContext(),
-                R.layout.playlist_simple_row_item,
-                new BeatHubBaseHelper(activity.getApplicationContext()).getAllPlaylists());
+/*
+        PlaylistsAdapter playlistsAdapter = new PlaylistsAdapter(activity, R.layout.playlist_simple_row_item, new BeatHubBaseHelper(activity).getAllPlaylists());
         ListView playlistView = (ListView) activity.findViewById(R.id.playlists_listView);
         playlistView.setAdapter(playlistsAdapter);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity.getApplicationContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater li = LayoutInflater.from(activity.getApplicationContext());
         View pumpView = li.inflate(R.layout.add_to_playlist_dialog_layout, null);
+        builder.setView(pumpView);
         builder.create();
         builder.show();*/
+
+        Toast.makeText(activity.getApplicationContext(), "VIJ METODA CHE NE RABOTI", Toast.LENGTH_LONG).show();
     }
 
 }
