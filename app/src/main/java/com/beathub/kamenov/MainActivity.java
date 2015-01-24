@@ -24,7 +24,7 @@ import java.util.Random;
 
 import DataBases.BeatHubBaseHelper;
 
-public class MainActivity extends FragmentActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener{
+public class MainActivity extends FragmentActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener {
 
     private final static int REPEAT_OFF = 0;
     private final static int REPEAT_ALL_SONGS = 1;
@@ -34,7 +34,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private final static int SHUFFLE_ON = 4;
 
     private int repeatMode = REPEAT_OFF;
-    private int shuffleMode = SHUFFLE_OFF ;
+    private int shuffleMode = SHUFFLE_OFF;
 
     public ArrayList<Song> songList;
     public Song currentPlaylingSong;
@@ -67,6 +67,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     public void setSongList(ArrayList<Song> songList) {
         this.songList = songList;
     }
+
     public ArrayList<Song> getSongList() {
         return songList;
     }
@@ -85,6 +86,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         setContentView(R.layout.activity_main);
 
         db = new BeatHubBaseHelper(getApplicationContext());
+        db.addPlaylist("RAP");
         setIdsForViews();
 
         firstInstalling();
@@ -112,7 +114,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         currentSongView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    flipCard();
+                flipCard();
             }
         });
 
@@ -167,7 +169,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
             @Override
             public void onClick(View v) {
 
-                switch (repeatMode){
+                switch (repeatMode) {
                     case REPEAT_OFF:
                         buttonRepeat.setBackgroundResource(R.drawable.repeat_button_all_songs);
                         showToastWithMessage("Repeat all songs");
@@ -193,7 +195,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
             @Override
             public void onClick(View v) {
 
-                switch (shuffleMode){
+                switch (shuffleMode) {
                     case SHUFFLE_OFF:
                         buttonShuffle.setBackgroundResource(R.drawable.shuffle_button_on);
                         showToastWithMessage("Shuffle on");
@@ -217,12 +219,12 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     }
 
     public void updateProgressBar() {
-            handler.postDelayed(mUpdateTimeTask, 100);
-        }
+        handler.postDelayed(mUpdateTimeTask, 100);
+    }
 
     /**
      * Background Runnable thread
-     * */
+     */
     private Runnable mUpdateTimeTask = new Runnable() {
         public void run() {
             long totalDuration = mediaPlayer.getDuration();
@@ -248,17 +250,17 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     }
 
-     /**
+    /**
      * When user starts moving the progress handler
-     * */
+     */
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
         handler.removeCallbacks(mUpdateTimeTask);
     }
 
-     /**
+    /**
      * When user stops moving the progress hanlder
-     * */
+     */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
         handler.removeCallbacks(mUpdateTimeTask);
@@ -273,52 +275,52 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     }
 
     //what to do when the song complete
-     @Override
-      public void onCompletion(MediaPlayer player) {
+    @Override
+    public void onCompletion(MediaPlayer player) {
 
-         player.reset();
+        player.reset();
 
-         switch (repeatMode){
-             case REPEAT_ALL_SONGS:
+        switch (repeatMode) {
+            case REPEAT_ALL_SONGS:
 
-                 switch (shuffleMode){
+                switch (shuffleMode) {
 
-                     case SHUFFLE_ON:
-                         playSong(new Random().nextInt(songList.size()));
-                         refreshArtCoverFragment();
-                         break;
-                     case SHUFFLE_OFF:
-                         playNextSong();
-                         break;
-                 }
+                    case SHUFFLE_ON:
+                        playSong(new Random().nextInt(songList.size()));
+                        refreshArtCoverFragment();
+                        break;
+                    case SHUFFLE_OFF:
+                        playNextSong();
+                        break;
+                }
 
-             case REPEAT_CURR_SONG:
+            case REPEAT_CURR_SONG:
 
-                 playSong(currentPlayingSongPosition);
-                 refreshArtCoverFragment();
-                 break;
+                playSong(currentPlayingSongPosition);
+                refreshArtCoverFragment();
+                break;
 
-             case REPEAT_OFF:
+            case REPEAT_OFF:
 
-                 switch (shuffleMode){
+                switch (shuffleMode) {
 
-                     case SHUFFLE_ON:
-                         playSong(new Random().nextInt(songList.size()));
-                         refreshArtCoverFragment();
-                         break;
+                    case SHUFFLE_ON:
+                        playSong(new Random().nextInt(songList.size()));
+                        refreshArtCoverFragment();
+                        break;
 
-                     case SHUFFLE_OFF:
+                    case SHUFFLE_OFF:
 
-                         if(currentPlayingSongPosition == (songList.size() - 1)){
-                             stopPlayer();
-                         }else{
-                             playNextSong();
-                         }
-                         break;
-                 }
-         }
+                        if (currentPlayingSongPosition == (songList.size() - 1)) {
+                            stopPlayer();
+                        } else {
+                            playNextSong();
+                        }
+                        break;
+                }
+        }
 
-      }
+    }
 
     private void firstInstalling() {
 
@@ -333,19 +335,19 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 //            new Thread(new Runnable() {
 //                @Override
 //                public void run() {
-                    dbInit();
+            dbInit();
 //                }
 //            });
         }
     }
 
-    private int indexOfLastPlayedSong(){
+    private int indexOfLastPlayedSong() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         int lastPlayedSong = prefs.getInt("lastSong", 0);
         return lastPlayedSong;
     }
 
-    private void saveLastPlayedSong(int position){
+    private void saveLastPlayedSong(int position) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         SharedPreferences.Editor edit = prefs.edit();
         edit.putInt("lastSong", position);
@@ -381,9 +383,8 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     }
 
     private void dbInit() {
-
         // CHANGE FOR YOUR PHONE
-        db.addFolderPath("/storage/extSdCard/Music");
+        db.addFolderPath("storage/emulated/0/Music");
         db.importFilesInDBByFolders(getContentResolver());
     }
 
@@ -393,11 +394,11 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         player.start();
     }
 
-    public void playSong(int position){
+    public void playSong(int position) {
 
         currentPlayingSongPosition = position;
 
-        if(songList == null){
+        if (songList == null) {
             songList = db.getAllSongs();
         }
         Song s = songList.get(position);
@@ -425,7 +426,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
             buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
 
             //flip the view
-            if(isBackSide){
+            if (isBackSide) {
                 flipCard();
             }
 
@@ -434,7 +435,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         }
     }
 
-    public void playNextSong(){
+    public void playNextSong() {
 
         if (currentPlayingSongPosition < songList.size() - 1) {
             int pos = currentPlayingSongPosition;
@@ -445,13 +446,13 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
             currentPlayingSongPosition = 0;
         }
 
-        if(!isBackSide){
+        if (!isBackSide) {
             refreshArtCoverFragment();
         }
 
     }
 
-    public void playPrevSong(){
+    public void playPrevSong() {
         if (currentPlayingSongPosition > 0) {
             int pos = currentPlayingSongPosition;
             playSong(pos - 1);
@@ -460,7 +461,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
             currentPlayingSongPosition = songList.size() - 1;
         }
 
-        if(!isBackSide){
+        if (!isBackSide) {
             refreshArtCoverFragment();
         }
     }
@@ -481,7 +482,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         totalDurationLabel = (TextView) findViewById(R.id.total_song_duration);
     }
 
-    private void refreshArtCoverFragment(){
+    private void refreshArtCoverFragment() {
         getFragmentManager()
                 .beginTransaction()
 //                .setCustomAnimations(
@@ -492,13 +493,15 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                 .commit();
     }
 
-    private void showToastWithMessage(String message){
+    private void showToastWithMessage(String message) {
 
         View layout = getLayoutInflater().inflate(R.layout.toast_layout,
                 (ViewGroup) findViewById(R.id.custom_toast_linear_layout));
 
         TextView textView = (TextView) layout.findViewById(R.id.toast_text_view);
         textView.setText(message);
+
+
         Toast toast = new Toast(this);
         toast.setView(layout);
         toast.setGravity(Gravity.CENTER, 0, 200);
@@ -506,7 +509,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         toast.show();
     }
 
-    private void stopPlayer(){
+    private void stopPlayer() {
 
         try {
             mediaPlayer.reset();
