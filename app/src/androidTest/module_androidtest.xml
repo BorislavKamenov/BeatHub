@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_androidtest" default="compile.module.androidtest">
+  <dirname property="module.androidtest.basedir" file="${ant.file.module_androidtest}"/>
+  
+  <property name="module.jdk.home.androidtest" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.androidtest" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.androidtest" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.androidtest" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="androidtest.output.dir" value="${module.androidtest.basedir}/../../../out/production/androidTest"/>
+  <property name="androidtest.testoutput.dir" value="${module.androidtest.basedir}/../../../out/test/androidTest"/>
+  
+  <path id="androidtest.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="androidtest.module.production.classpath">
+    <path refid="${module.jdk.classpath.androidtest}"/>
+  </path>
+  
+  <path id="androidtest.runtime.production.module.classpath">
+    <pathelement location="${androidtest.output.dir}"/>
+  </path>
+  
+  <path id="androidtest.module.classpath">
+    <path refid="${module.jdk.classpath.androidtest}"/>
+    <pathelement location="${androidtest.output.dir}"/>
+  </path>
+  
+  <path id="androidtest.runtime.module.classpath">
+    <pathelement location="${androidtest.testoutput.dir}"/>
+    <pathelement location="${androidtest.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.androidtest">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.androidtest">
+    <patternset refid="excluded.from.module.androidtest"/>
+  </patternset>
+  
+  <path id="androidtest.module.sourcepath">
+    <dirset dir="${module.androidtest.basedir}">
+      <include name="java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.androidtest" depends="compile.module.androidtest.production,compile.module.androidtest.tests" description="Compile module androidTest"/>
+  
+  <target name="compile.module.androidtest.production" depends="register.custom.compilers" description="Compile module androidTest; production classes">
+    <mkdir dir="${androidtest.output.dir}"/>
+    <javac2 destdir="${androidtest.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.androidtest}/javac">
+      <compilerarg line="${compiler.args.androidtest}"/>
+      <bootclasspath refid="androidtest.module.bootclasspath"/>
+      <classpath refid="androidtest.module.production.classpath"/>
+      <src refid="androidtest.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.androidtest"/>
+    </javac2>
+    
+    <copy todir="${androidtest.output.dir}">
+      <fileset dir="${module.androidtest.basedir}/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.androidtest.tests" depends="register.custom.compilers,compile.module.androidtest.production" description="compile module androidTest; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.androidtest" description="cleanup module">
+    <delete dir="${androidtest.output.dir}"/>
+    <delete dir="${androidtest.testoutput.dir}"/>
+  </target>
+</project>
