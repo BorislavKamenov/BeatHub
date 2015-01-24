@@ -23,14 +23,9 @@
 
         <ImageView
             android:id="@+id/artwork_viewpager_imageview"
-            android:layout_width="190dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/asd" />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
 
-        <TextView
-            android:id="@+id/viewID"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
     </com.beathub.kamenov.MyLinearLayout>
 
 </LinearLayout>
