@@ -19,6 +19,7 @@ import java.lang.ref.WeakReference;
 public class ArtCoverContentFragment extends Fragment {
 
     private ImageView artcover;
+    private final static int ART_COVER_PADDING = 20;
 	
 	public static Fragment newInstance(MainArtCoverFragment context, int pos, float scale,boolean IsBlured)
 	{
@@ -37,7 +38,7 @@ public class ArtCoverContentFragment extends Fragment {
 		if (container == null) {
 			return null;
 		}
-		
+
 		LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.artcover_inner_view_fragment, container, false);
 
         artcover = (ImageView) layout.findViewById(R.id.artwork_viewpager_imageview);
@@ -84,7 +85,7 @@ public class ArtCoverContentFragment extends Fragment {
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeByteArray(art, 0, art.length, options);
 
-        options.inSampleSize = calculateInSampleSize(options, 300, 300);
+        options.inSampleSize = calculateInSampleSize(options, 200, 200);
 
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(art, 0, art.length, options);
@@ -126,7 +127,7 @@ public class ArtCoverContentFragment extends Fragment {
 
         public BitmapWorkerAsyncTask(ImageView imageView) {
             // Use a WeakReference to ensure the ImageView can be garbage collected
-            imageViewReference = new WeakReference<ImageView>(imageView);
+            imageViewReference = new WeakReference<>(imageView);
         }
 
         // Decode image in background.
@@ -143,7 +144,9 @@ public class ArtCoverContentFragment extends Fragment {
             if (imageViewReference != null && bitmap != null) {
                 final ImageView imageView = imageViewReference.get();
                 if (imageView != null) {
+
                     imageView.setImageBitmap(bitmap);
+                    imageView.setPadding(ART_COVER_PADDING, ART_COVER_PADDING, ART_COVER_PADDING, ART_COVER_PADDING);
                 }
             }
         }

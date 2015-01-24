@@ -484,9 +484,9 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private void refreshArtCoverFragment() {
         getFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(
-                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+//                .setCustomAnimations(
+//                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+//                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
                 .replace(R.id.fragments_container, new MainArtCoverFragment())
                 .addToBackStack(null)
                 .commit();
