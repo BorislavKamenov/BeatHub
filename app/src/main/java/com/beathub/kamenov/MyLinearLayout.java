@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
 public class MyLinearLayout extends LinearLayout {
-	private float scale = MainActivity.BIG_SCALE;
+	private float scale = MainArtCoverFragment.BIG_SCALE;
 
 	public MyLinearLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);

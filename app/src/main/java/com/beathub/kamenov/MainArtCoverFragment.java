@@ -3,7 +3,6 @@ package com.beathub.kamenov;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +33,7 @@ public class MainArtCoverFragment extends Fragment {
 
         // Set current item to the middle page so we can fling to both
         // directions left and right
-        viewPager.setCurrentItem(((MainActivity)getActivity()).getCurrentPlayingSongPosition());
-        Log.i("ArtCoverFragment currentPlayingSongPosition", ((MainActivity)getActivity()).getCurrentPlayingSongPosition() + "");
+        //viewPager.setCurrentItem(((MainActivity)getActivity()).getCurrentPlayingSongPosition());
 
         // Necessary or the pager will only have one extra page to show
         // make this at least however many pages you can see
