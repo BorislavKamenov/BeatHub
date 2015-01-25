@@ -99,7 +99,7 @@
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="-2dp"
             android:lines="1"
             android:layout_toLeftOf="@+id/numberOfSongInList" />
@@ -111,7 +111,7 @@
             android:layout_alignLeft="@id/currentSongName"
             android:layout_toLeftOf="@+id/numberOfSongInList"
             android:layout_below="@id/currentSongName"
-            android:textColor="#FFFFFF"
+            android:textColor="#ffa4a4a4"
             android:textSize="17sp"
             android:lines="1"
             android:layout_marginBottom="7dp" />

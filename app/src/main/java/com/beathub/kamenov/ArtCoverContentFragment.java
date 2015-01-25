@@ -20,10 +20,11 @@ public class ArtCoverContentFragment extends Fragment {
 
     private ImageView artcover;
     private final static int ART_COVER_PADDING = 20;
+    private static int position;
 	
 	public static Fragment newInstance(MainArtCoverFragment context, int pos, float scale,boolean IsBlured)
 	{
-		
+		position = pos;
 		Bundle b = new Bundle();
 		b.putInt("pos", pos);
 		b.putFloat("scale", scale);
@@ -43,6 +44,7 @@ public class ArtCoverContentFragment extends Fragment {
 
         artcover = (ImageView) layout.findViewById(R.id.artwork_viewpager_imageview);
 
+        //loadBitmap(((MainActivity)getActivity()).getSongList().get(position).getPath(), artcover);
         loadBitmap(((MainActivity)getActivity()).getCurrentPlaylingSong().getPath(), artcover);
 
 		MyLinearLayout root = (MyLinearLayout) layout.findViewById(R.id.animated_view_pager);
@@ -78,7 +80,7 @@ public class ArtCoverContentFragment extends Fragment {
 
         if (art == null) {
             //return default artCover (app logo)
-            return BitmapFactory.decodeResource(getResources(), R.drawable.asd);
+            return BitmapFactory.decodeResource(getResources(), R.drawable.default_artcover);
         }
 
         final BitmapFactory.Options options = new BitmapFactory.Options();

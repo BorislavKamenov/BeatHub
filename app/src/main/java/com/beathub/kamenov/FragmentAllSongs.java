@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,6 +25,10 @@ public class FragmentAllSongs extends Fragment {
     private SongAdapter songAdapter;
     private MediaPlayer mp = new MediaPlayer();
 
+    public static FragmentAllSongs newInstance() {
+        FragmentAllSongs f = new FragmentAllSongs();
+        return f;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,12 +49,10 @@ public class FragmentAllSongs extends Fragment {
         View view = inflater.inflate(R.layout.allplaylilsts_fragment, container, false);
 
 
-        listView = (ListView) view.findViewById(R.id.all_p1laylists_listview_in_fragment);
-        //songs = db.getAllSongs();
+        listView = (ListView) view.findViewById(R.id.all_playlists_listview_in_fragment);
         songAdapter = new SongAdapter(getActivity().getApplicationContext(), R.layout.song_simple_row_item, songs);
         listView.setAdapter(songAdapter);
         registerForContextMenu(listView);
-
 
         new Thread(new Runnable() {
             @Override
@@ -81,7 +82,6 @@ public class FragmentAllSongs extends Fragment {
             }
         });
 
-
     }
 
 
@@ -102,21 +102,19 @@ public class FragmentAllSongs extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        String[] menuItems = getResources().getStringArray(R.array.context_menu_items);
-        String positionText = "";
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        int pos = menuInfo.position;
+
         int menuItemIndex = item.getItemId();
+
         switch (menuItemIndex) {
             case 0:
-                positionText = menuItems[menuItemIndex];
-                //Toast.makeText(getActivity().getApplicationContext(), positionText, Toast.LENGTH_LONG).show();
-                MainListsFragment.addToPlayListDialog(getActivity());
+
+                MainListsFragment.addToPlayListDialog(getActivity(), songs.get(pos));
 
             case 1:
-                positionText = menuItems[menuItemIndex];
-                Toast.makeText(getActivity().getApplicationContext(), positionText, Toast.LENGTH_LONG).show();
+
             case 2:
-                positionText = menuItems[menuItemIndex];
-                Toast.makeText(getActivity().getApplicationContext(), positionText, Toast.LENGTH_LONG).show();
         }
         return true;
     }

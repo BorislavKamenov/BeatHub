@@ -6,8 +6,10 @@
         android:id="@+id/playlist_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:textSize="17sp"
+        android:textColor="@color/white"/>
 
     <TextView
         android:id="@+id/count_of_songs_in_playlist"
@@ -15,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/playlist_name"
         android:layout_below="@id/playlist_name"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginTop="5dp"
+        android:textColor="@color/white"/>
 
 </RelativeLayout>

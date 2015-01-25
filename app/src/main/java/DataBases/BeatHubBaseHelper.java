@@ -348,12 +348,15 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(TABLE_NAME_PLAYLISTS, null, null, null, null, null, null);
 
-        cursor.moveToPosition(1);
+        if (cursor.moveToFirst()) {
+            do {
 
-        String playlistName = cursor.getString(cursor.getColumnIndex(COLUMN_PLAYLIST_NAME));
+                String playlistName = cursor.getString(cursor.getColumnIndex(COLUMN_PLAYLIST_NAME));
+                Playlist playlist = new Playlist(playlistName);
+                playlists.add(playlist);
 
-        Playlist playlist = new Playlist(playlistName);
-        playlists.add(playlist);
+            } while (cursor.moveToNext());
+        }
 
         cursor.close();
         db.close();
@@ -374,4 +377,11 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    public int getLastFreePositionToAddPlaylist(){
+
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(TABLE_NAME_PLAYLISTS, null, null, null, null, null, null);
+
+        return cursor.getCount();
+    }
 }

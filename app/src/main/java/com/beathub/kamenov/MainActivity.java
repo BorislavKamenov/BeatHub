@@ -64,6 +64,8 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private int seekForwardTime = 5000; // 5000 milliseconds
     private int seekBackwardTime = 5000;
 
+    private int getCurrentPlaylingSongPosition;
+
     public void setSongList(ArrayList<Song> songList) {
         this.songList = songList;
     }
@@ -80,13 +82,16 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         this.currentPlaylingSong = currentPlaylingSong;
     }
 
+    public int getCurrentPlayingSongPosition() {
+        return currentPlayingSongPosition;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         db = new BeatHubBaseHelper(getApplicationContext());
-        db.addPlaylist("RAP");
         setIdsForViews();
 
         firstInstalling();
@@ -384,7 +389,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     private void dbInit() {
         // CHANGE FOR YOUR PHONE
-        db.addFolderPath("storage/emulated/0/Music");
+        db.addFolderPath("/storage/extSdCard/Music");
         db.importFilesInDBByFolders(getContentResolver());
     }
 
@@ -482,7 +487,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         totalDurationLabel = (TextView) findViewById(R.id.total_song_duration);
     }
 
-    private void refreshArtCoverFragment() {
+    public void refreshArtCoverFragment() {
         getFragmentManager()
                 .beginTransaction()
 //                .setCustomAnimations(
@@ -493,7 +498,18 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                 .commit();
     }
 
-    private void showToastWithMessage(String message) {
+    public void refreshMainListsFragment() {
+        getFragmentManager()
+                .beginTransaction()
+//                .setCustomAnimations(
+//                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+//                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+                .replace(R.id.fragments_container, new MainListsFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void showToastWithMessage(String message) {
 
         View layout = getLayoutInflater().inflate(R.layout.toast_layout,
                 (ViewGroup) findViewById(R.id.custom_toast_linear_layout));
@@ -504,7 +520,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
         Toast toast = new Toast(this);
         toast.setView(layout);
-        toast.setGravity(Gravity.CENTER, 0, 200);
+        toast.setGravity(Gravity.CENTER, 0, 400);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.show();
     }

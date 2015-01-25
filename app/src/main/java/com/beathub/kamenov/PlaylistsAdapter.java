@@ -13,6 +13,7 @@ import java.util.ArrayList;
  * Created by Borislav on 14.1.2015 г..
  */
 public class PlaylistsAdapter extends ArrayAdapter<Playlist> {
+
     private int layout_id;
     private Context context;
     private ArrayList<Playlist> playlists;
@@ -32,18 +33,18 @@ public class PlaylistsAdapter extends ArrayAdapter<Playlist> {
             ViewHolder holder = new ViewHolder();
             view = inflater.inflate(layout_id, parent, false);
             holder.playlistName = (TextView) view.findViewById(R.id.playlist_name);
-            holder.countOfSongs = (TextView) view.findViewById(R.id.count_of_songs_in_playlist);
+            //holder.countOfSongs = (TextView) view.findViewById(R.id.count_of_songs_in_playlist);
             view.setTag(holder);
         }
         ViewHolder holder = (ViewHolder) view.getTag();
         Playlist playlist = playlists.get(position);
         holder.playlistName.setText(playlist.getName());
-        holder.countOfSongs.setText(playlist.getCountOfSongs());
+        //holder.countOfSongs.setText(playlist.getCountOfSongs());
         return view;
     }
 
     class ViewHolder {
         private TextView playlistName;
-        private TextView countOfSongs;
+        //private TextView countOfSongs;
     }
 }

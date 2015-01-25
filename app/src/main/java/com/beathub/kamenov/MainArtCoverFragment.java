@@ -37,12 +37,11 @@ public class MainArtCoverFragment extends Fragment {
 
         // Necessary or the pager will only have one extra page to show
         // make this at least however many pages you can see
-        viewPager.setOffscreenPageLimit(1);
-
+        viewPager.setOffscreenPageLimit(2);
         // Set margin for pages as a negative number, so a part of next and
         // previous pages will be showed
+        //viewPager.setCurrentItem(((MainActivity)getActivity()).getCurrentPlayingSongPosition());
 
-        //
         viewPager.setPageMargin(Integer.parseInt(getString(R.string.pagermargin)));
 
         return view;

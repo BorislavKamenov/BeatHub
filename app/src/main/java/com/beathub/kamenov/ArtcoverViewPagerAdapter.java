@@ -25,7 +25,7 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
     private static float minAlpha = 0.6f;
     private static float maxAlpha = 1f;
     private static float minDegree = 60.0f;
-    private int lastPosition = -1;
+    private int lastPosition;
 
     public static float getMinDegree() {
         return minDegree;
@@ -46,6 +46,7 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
 
         //initialise lastpage
         this.lastPage = ((MainActivity) context.getActivity()).getSongList().size() - 1;
+
     }
 
     @Override
@@ -60,21 +61,9 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
         }
 
         Fragment curFragment = ArtCoverContentFragment.newInstance(context, position, scale, IsBlured);
-        cur = getRootView(position);
-        next = getRootView(position + 1);
-        prev = getRootView(position - 1);
-
-//        if(lastPosition != position){
-//
-//            if(lastPosition > position){
-//                ((MainActivity)context.getActivity()).playPrevSong();
-//            }else if(lastPosition < position){
-//                ((MainActivity)context.getActivity()).playNextSong();
-//            }
-//
-//        }
-//
-//        lastPosition = position;
+        cur = getRootView(position, 0);
+        next = getRootView(position + 1, 1);
+        prev = getRootView(position - 1, -1);
 
         return curFragment;
     }
@@ -89,20 +78,20 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
 
         if (positionOffset >= 0f && positionOffset <= 1f) {
             positionOffset = positionOffset * positionOffset;
-            cur = getRootView(position);
-            next = getRootView(position + 1);
-            prev = getRootView(position - 1);
-            nextnext = getRootView(position + 2);
+            cur = getRootView(position, 0);
+            next = getRootView(position + 1, 1);
+            prev = getRootView(position - 1, -1);
+           // nextnext = getRootView(position + 2);
 
             ViewHelper.setAlpha(cur, maxAlpha - 0.5f * positionOffset);
             ViewHelper.setAlpha(next, minAlpha + 0.5f * positionOffset);
             ViewHelper.setAlpha(prev, minAlpha + 0.5f * positionOffset);
 
 
-            if (nextnext != null) {
-                ViewHelper.setAlpha(nextnext, minAlpha);
-                ViewHelper.setRotationY(nextnext, -minDegree);
-            }
+//            if (nextnext != null) {
+//                ViewHelper.setAlpha(nextnext, minAlpha);
+//                ViewHelper.setRotationY(nextnext, -minDegree);
+//            }
             if (cur != null) {
                 cur.setScaleBoth(MainArtCoverFragment.BIG_SCALE
                         - MainArtCoverFragment.DIFF_SCALE * positionOffset);
@@ -149,12 +138,15 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
 /*
  * to get finger swipe direction
  */
-        if (lastPage <= position) {
+        if (lastPage < position) {
             swipedLeft = true;
+            //((MainActivity)context.getActivity()).playNextSong();
 
         } else if (lastPage > position) {
             swipedLeft = false;
+            //((MainActivity)context.getActivity()).playNextSong();
         }
+
         lastPage = position;
 
     }
@@ -163,18 +155,22 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
     public void onPageScrollStateChanged(int state) {
     }
 
-    private MyLinearLayout getRootView(int position) {
+    //-1 - left page
+    //0 - current page
+    //1 - right page
+    private MyLinearLayout getRootView(int position,int type) {
 
         MyLinearLayout ly;
         try {
-            ly = (MyLinearLayout)
-                    fm.findFragmentByTag(this.getFragmentTag(position)).getView().findViewById(R.id.animated_view_pager);
+            ly = (MyLinearLayout) fm.findFragmentByTag(this.getFragmentTag(position)).getView().findViewById(R.id.animated_view_pager);
         } catch (Exception e) {
 
             return null;
         }
-        if (ly != null)
+        if (ly != null) {
+
             return ly;
+        }
         return null;
     }
 
