@@ -46,7 +46,7 @@ public class FragmentAllSongs extends Fragment {
         View view = inflater.inflate(R.layout.allplaylilsts_fragment, container, false);
 
 
-        listView = (ListView) view.findViewById(R.id.all_playlists_listview_in_fragment);
+        listView = (ListView) view.findViewById(R.id.all_p1laylists_listview_in_fragment);
         //songs = db.getAllSongs();
         songAdapter = new SongAdapter(getActivity().getApplicationContext(), R.layout.song_simple_row_item, songs);
         listView.setAdapter(songAdapter);
