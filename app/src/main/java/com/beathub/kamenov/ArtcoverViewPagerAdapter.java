@@ -140,7 +140,7 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
  */
         if (lastPage < position) {
             swipedLeft = true;
-            ((MainActivity)context.getActivity()).playNextSong();
+            //((MainActivity)context.getActivity()).playNextSong();
 
         } else if (lastPage > position) {
             swipedLeft = false;

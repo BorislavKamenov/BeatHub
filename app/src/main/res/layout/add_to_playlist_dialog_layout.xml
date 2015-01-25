@@ -1,34 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/dark_dark_blue">
 
     <TextView
+        android:id="@+id/add_to_playlist_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/add_to_playlist"
-        android:textSize="20dp"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:id="@+id/add_to_playlist_TextView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:textSize="19dp"
+        android:textColor="@color/light_blue"
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="5dp"/>
+
+    <RelativeLayout
+        android:id="@+id/create_new_playlist"
+        android:layout_below="@id/add_to_playlist_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:background="@drawable/current_song_selector">
+
+        <ImageView
+            android:id="@+id/plus_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/add_new_icon"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"/>
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/plus_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create_playlist"
+            android:textSize="18sp"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/light_blue"/>
+
+    </RelativeLayout>
 
     <ListView
-        android:layout_below="@+id/add_to_playlist_TextView"
-        android:id="@+id/playlists_listView"
+        android:id="@+id/playlists_list_view"
+        android:layout_below="@+id/create_new_playlist"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </ListView>
-
-    <View
-        android:id="@+id/line_over_button_add_to_playlist_dialog"
-        android:layout_width="match_parent"
-        android:layout_below="@+id/playlists_listView"
-        android:layout_height="2dp"
-        android:background="@color/abc_search_url_text_normal" />
-
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

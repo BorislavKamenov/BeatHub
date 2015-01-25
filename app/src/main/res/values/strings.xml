@@ -7,6 +7,7 @@
     <string name="title_activity_play_list">PlayListActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_to_playlist">Add to Playlist</string>
+    <string name="create_playlist">Create New Playlist</string>
 
     <string name="pagermargin">0</string>
 

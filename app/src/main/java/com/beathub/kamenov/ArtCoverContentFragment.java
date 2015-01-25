@@ -44,7 +44,8 @@ public class ArtCoverContentFragment extends Fragment {
 
         artcover = (ImageView) layout.findViewById(R.id.artwork_viewpager_imageview);
 
-        loadBitmap(((MainActivity)getActivity()).getSongList().get(position).getPath(), artcover);
+        //loadBitmap(((MainActivity)getActivity()).getSongList().get(position).getPath(), artcover);
+        loadBitmap(((MainActivity)getActivity()).getCurrentPlaylingSong().getPath(), artcover);
 
 		MyLinearLayout root = (MyLinearLayout) layout.findViewById(R.id.animated_view_pager);
 		float scale = this.getArguments().getFloat("scale");

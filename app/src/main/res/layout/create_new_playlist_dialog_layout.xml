@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_dark_blue" >
+
+    <TextView
+        android:id="@+id/add_to_playlist_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create_playlist"
+        android:textSize="20dp"
+        android:textColor="@color/light_blue"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"/>
+
+    <EditText
+        android:id="@+id/new_playlist_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@id/add_to_playlist_textView"
+        android:layout_marginTop="20dp"
+        android:textSize="17dp"
+        android:textColor="@color/white"/>
+
+
+</RelativeLayout>

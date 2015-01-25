@@ -24,18 +24,15 @@ public class ViewPagerListsFragments extends FragmentPagerAdapter {
 
             // Open FragmentAllSongs.java
             case 0:
-                FragmentAllSongs fragmentAllSongs = new FragmentAllSongs();
-                return fragmentAllSongs;
+                return FragmentAllSongs.newInstance();
 
             // Open FragmentPlaylist.java
             case 1:
-                FragmentPlaylist fragmentPlaylist = new FragmentPlaylist();
-                return fragmentPlaylist;
+                return FragmentPlaylist.newInstance();
 
             // Open FragmentAlbums.java
             case 2:
-                FragmentAlbums fragmentAlbums = new FragmentAlbums();
-                return fragmentAlbums;
+                return FragmentAlbums.newInstance();
         }
         return null;
 

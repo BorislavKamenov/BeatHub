@@ -7,7 +7,7 @@ public class Playlist {
 
     public Playlist(String name){
         this.name = name;
-        countOfSongs = 0;
+        //countOfSongs = 0;
     }
 
 //    Playlist(String name, int countOfSongs){
