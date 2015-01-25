@@ -64,6 +64,8 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private int seekForwardTime = 5000; // 5000 milliseconds
     private int seekBackwardTime = 5000;
 
+    private int getCurrentPlaylingSongPosition;
+
     public void setSongList(ArrayList<Song> songList) {
         this.songList = songList;
     }
@@ -78,6 +80,10 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     public void setCurrentPlaylingSong(Song currentPlaylingSong) {
         this.currentPlaylingSong = currentPlaylingSong;
+    }
+
+    public int getCurrentPlayingSongPosition() {
+        return currentPlayingSongPosition;
     }
 
     @Override
@@ -384,7 +390,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     private void dbInit() {
         // CHANGE FOR YOUR PHONE
-        db.addFolderPath("storage/emulated/0/Music");
+        db.addFolderPath("/storage/extSdCard/Music");
         db.importFilesInDBByFolders(getContentResolver());
     }
 

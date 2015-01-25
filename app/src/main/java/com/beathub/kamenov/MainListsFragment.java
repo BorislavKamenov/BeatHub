@@ -33,7 +33,7 @@ public class MainListsFragment extends Fragment {
     }
 
     protected static void addToPlayListDialog(Activity activity) {
-    /*    PlaylistsAdapter playlistsAdapter = new PlaylistsAdapter(activity.getApplicationContext(),
+       PlaylistsAdapter playlistsAdapter = new PlaylistsAdapter(activity.getApplicationContext(),
                 R.layout.playlist_simple_row_item,
                 new BeatHubBaseHelper(activity.getApplicationContext()).getAllPlaylists());
         ListView playlistView = (ListView) activity.findViewById(R.id.playlists_listView);
@@ -43,7 +43,7 @@ public class MainListsFragment extends Fragment {
         LayoutInflater li = LayoutInflater.from(activity.getApplicationContext());
         View pumpView = li.inflate(R.layout.add_to_playlist_dialog_layout, null);
         builder.create();
-        builder.show();*/
+        builder.show();
     }
 
 }
