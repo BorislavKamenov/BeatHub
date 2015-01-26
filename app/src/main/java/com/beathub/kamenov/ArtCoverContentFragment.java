@@ -21,43 +21,44 @@ public class ArtCoverContentFragment extends Fragment {
     private ImageView artcover;
     private final static int ART_COVER_PADDING = 20;
     private static int position;
-	
-	public static Fragment newInstance(MainArtCoverFragment context, int pos, float scale,boolean IsBlured)
-	{
-		position = pos;
-		Bundle b = new Bundle();
-		b.putInt("pos", pos);
-		b.putFloat("scale", scale);
-		b.putBoolean("IsBlured", IsBlured);
-		return Fragment.instantiate(context.getActivity(), ArtCoverContentFragment.class.getName(), b);
-	}
-	
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
 
-		if (container == null) {
-			return null;
-		}
+    public static Fragment newInstance(MainArtCoverFragment context, int pos, float scale, boolean IsBlured) {
+        position = pos;
+        Bundle b = new Bundle();
+        b.putInt("pos", pos);
+        b.putFloat("scale", scale);
+        b.putBoolean("IsBlured", IsBlured);
+        return Fragment.instantiate(context.getActivity(), ArtCoverContentFragment.class.getName(), b);
+    }
 
-		LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.artcover_inner_view_fragment, container, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        if (container == null) {
+            return null;
+        }
+
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.artcover_inner_view_fragment, container, false);
 
         artcover = (ImageView) layout.findViewById(R.id.artwork_viewpager_imageview);
 
-        //loadBitmap(((MainActivity)getActivity()).getSongList().get(position).getPath(), artcover);
-        loadBitmap(((MainActivity)getActivity()).getCurrentPlaylingSong().getPath(), artcover);
 
-		MyLinearLayout root = (MyLinearLayout) layout.findViewById(R.id.animated_view_pager);
-		float scale = this.getArguments().getFloat("scale");
-		root.setScaleBoth(scale);
-		boolean isBlured=this.getArguments().getBoolean("IsBlured");
-		if(isBlured)
-		{
-			ViewHelper.setAlpha(root, ArtcoverViewPagerAdapter.getMinAlpha());
-			ViewHelper.setRotationY(root, ArtcoverViewPagerAdapter.getMinDegree());
-		}
-		return layout;
-	}
+        //ТУКАА НЯКВИ БЪРКОТИИ БОБИ
+
+        // loadBitmap(((MainActivity) getActivity()).getSongList().get(position).getPath(), artcover);
+        //loadBitmap(((MainActivity) getActivity()).getCurrentPlaylingSong().getPath(), artcover);
+
+        MyLinearLayout root = (MyLinearLayout) layout.findViewById(R.id.animated_view_pager);
+        float scale = this.getArguments().getFloat("scale");
+        root.setScaleBoth(scale);
+        boolean isBlured = this.getArguments().getBoolean("IsBlured");
+        if (isBlured) {
+            ViewHelper.setAlpha(root, ArtcoverViewPagerAdapter.getMinAlpha());
+            ViewHelper.setRotationY(root, ArtcoverViewPagerAdapter.getMinDegree());
+        }
+        return layout;
+    }
 
     public void loadBitmap(String songPath, ImageView imageView) {
         BitmapWorkerAsyncTask task = new BitmapWorkerAsyncTask(imageView);

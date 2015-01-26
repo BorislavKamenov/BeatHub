@@ -19,6 +19,7 @@ import DataBases.BeatHubBaseHelper;
 public class MainListsFragment extends Fragment {
 
     private static BeatHubBaseHelper db;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.view_pager_fragment, null);
@@ -32,55 +33,63 @@ public class MainListsFragment extends Fragment {
         return view;
     }
 
-    protected static void addToPlayListDialog(final Activity activity,final Song song) {
+    protected static void addToPlayListDialog(final Activity activity, final Song song) {
+
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater = LayoutInflater.from(activity);
 
-        View view = inflater.inflate(R.layout.add_to_playlist_dialog_layout, null);
+        final View view = inflater.inflate(R.layout.add_to_playlist_dialog_layout, null);
 
-        ListView playlists = (ListView) view.findViewById(R.id.playlists_list_view);
-        PlaylistsAdapter adapter = new PlaylistsAdapter(activity, R.layout.playlist_simple_row_item, db.getAllPlaylists());
-        adapter.notifyDataSetChanged();
+        final ListView playlists = (ListView) view.findViewById(R.id.playlists_list_view);
+
+        final PlaylistsAdapter adapter = new PlaylistsAdapter(activity, R.layout.playlist_simple_row_item, db.getAllPlaylists());
 
         RelativeLayout createNewPlaylist = (RelativeLayout) view.findViewById(R.id.create_new_playlist);
 
-        final AlertDialog alertDialog = dialog.create();
+        playlists.setAdapter(adapter);
 
         createNewPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createNewPlaylist(activity, song);
+                createNewPlaylist(activity, song, playlists);
+
             }
         });
+        playlists.setOnItemClickListener(new AdapterView.OnItemClickListener()
 
-        playlists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                db.addSongToPlaylist((int) song.getId(), position + 1);
-                ((MainActivity)activity).showToastWithMessage("Added");
-                ((MainActivity)activity).refreshMainListsFragment();
-                alertDialog.dismiss();
-            }
-        });
+                                         {
+                                             @Override
+                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                 db.addSongToPlaylist((int) song.getId(), position + 1);
+                                                 ((MainActivity) activity).showToastWithMessage("Added");
 
-        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+                                             }
+                                         }
 
-        playlists.setAdapter(adapter);
+        );
+
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }
+
+        );
         dialog.setView(view);
         dialog.create();
         dialog.show();
+
     }
+
     /*
     * position - position of the song in the list
     * */
-    private static void createNewPlaylist(final Activity activity, final Song songForAdding){
+    private static void createNewPlaylist(final Activity activity, final Song songForAdding, final ListView listPlayLists) {
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
 
@@ -100,10 +109,14 @@ public class MainListsFragment extends Fragment {
 
                     int playlist_id = db.getLastFreePositionToAddPlaylist();
 
-                    db.addSongToPlaylist((int)songForAdding.getId(), playlist_id);
-                    ((MainActivity)activity).refreshMainListsFragment();
+                    db.addSongToPlaylist((int) songForAdding.getId(), playlist_id);
+                    ((MainActivity) activity).refreshMainListsFragment();
                 }
-                ((MainActivity)activity).showToastWithMessage("Created");
+                ((MainActivity) activity).showToastWithMessage("Created");
+                PlaylistsAdapter newPlaylistAdapter = new PlaylistsAdapter(activity, R.layout.playlist_simple_row_item, db.getAllPlaylists());
+                listPlayLists.setAdapter(newPlaylistAdapter);
+
+
             }
         });
 
@@ -113,7 +126,6 @@ public class MainListsFragment extends Fragment {
                 dialog.dismiss();
             }
         });
-
         dialog.setView(view);
         dialog.create();
         dialog.show();

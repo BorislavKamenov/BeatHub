@@ -26,6 +26,7 @@ public class FragmentPlaylist extends Fragment {
 
         View view = inflater.inflate(R.layout.allplaylilsts_fragment, container, false);
 
+
         ArrayList<Playlist> playlists = new BeatHubBaseHelper(getActivity()).getAllPlaylists();
 
         ListView listViewPlaylists = (ListView) view.findViewById(R.id.all_playlists_listview_in_fragment);

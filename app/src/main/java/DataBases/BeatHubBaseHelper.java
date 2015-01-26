@@ -140,6 +140,12 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public void getSongsFromPlaylist(String playlistName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+    }
+
+
     public void addFolderPath(String path) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -377,7 +383,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int getLastFreePositionToAddPlaylist(){
+    public int getLastFreePositionToAddPlaylist() {
 
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME_PLAYLISTS, null, null, null, null, null, null);
