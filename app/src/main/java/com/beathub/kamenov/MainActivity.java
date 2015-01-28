@@ -389,7 +389,9 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     private void dbInit() {
         // CHANGE FOR YOUR PHONE
-        db.addFolderPath("/storage/extSdCard/Music");
+        //NE E TRUDNO SAMO DA MI ZAKOMENTIRASH DIRECTORYTO :D
+        // db.addFolderPath("/storage/extSdCard/Music");
+        db.addFolderPath("/storage/emulated/0/Music/");
         db.importFilesInDBByFolders(getContentResolver());
     }
 
