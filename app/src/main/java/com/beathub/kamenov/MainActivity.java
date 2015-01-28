@@ -100,7 +100,8 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         mediaPlayer.setOnCompletionListener(this);
 
         // By default play first song
-        playSong(indexOfLastPlayedSong());
+
+
         buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
         buttonRepeat.setBackgroundResource(R.drawable.repeat_button_off);
         buttonShuffle.setBackgroundResource(R.drawable.shuffle_button_off);
@@ -215,6 +216,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                 }
             }
         });
+
     }
 
     @Override
@@ -291,7 +293,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                 switch (shuffleMode) {
 
                     case SHUFFLE_ON:
-                        playSong(new Random().nextInt(songList.size()));
+                        playSong(songList, new Random().nextInt(songList.size()));
                         refreshArtCoverFragment();
                         break;
                     case SHUFFLE_OFF:
@@ -301,7 +303,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
             case REPEAT_CURR_SONG:
 
-                playSong(currentPlayingSongPosition);
+                playSong(songList, currentPlayingSongPosition);
                 refreshArtCoverFragment();
                 break;
 
@@ -310,7 +312,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                 switch (shuffleMode) {
 
                     case SHUFFLE_ON:
-                        playSong(new Random().nextInt(songList.size()));
+                        playSong(songList, new Random().nextInt(songList.size()));
                         refreshArtCoverFragment();
                         break;
 
@@ -346,10 +348,12 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         }
     }
 
-    private int indexOfLastPlayedSong() {
+    private ArrayList<Song> indexOfLastPlayedSong() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        int lastPlayedSong = prefs.getInt("lastSong", 0);
-        return lastPlayedSong;
+        ArrayList<Song> lastSong = new ArrayList<Song>();
+        int lastSongIndex = prefs.getInt("lastSong", 0);
+        lastSong.add(songList.get(lastSongIndex));
+        return lastSong;
     }
 
     private void saveLastPlayedSong(int position) {
@@ -401,13 +405,11 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         player.start();
     }
 
-    public void playSong(int position) {
+
+    public void playSong(ArrayList<Song> songList, int position) {
 
         currentPlayingSongPosition = position;
 
-        if (songList == null) {
-            songList = db.getAllSongs();
-        }
         Song s = songList.get(position);
 
         setCurrentPlaylingSong(s);
@@ -446,10 +448,10 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
         if (currentPlayingSongPosition < songList.size() - 1) {
             int pos = currentPlayingSongPosition;
-            playSong(pos + 1);
+            playSong(songList, pos + 1);
         } else {
             //play first song
-            playSong(0);
+            playSong(songList, 0);
             currentPlayingSongPosition = 0;
         }
 
@@ -462,9 +464,9 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     public void playPrevSong() {
         if (currentPlayingSongPosition > 0) {
             int pos = currentPlayingSongPosition;
-            playSong(pos - 1);
+            playSong(songList, pos - 1);
         } else {
-            playSong(songList.size() - 1);
+            playSong(songList, songList.size() - 1);
             currentPlayingSongPosition = songList.size() - 1;
         }
 
@@ -550,5 +552,6 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         }, 500);
 
     }
+
 
 }
