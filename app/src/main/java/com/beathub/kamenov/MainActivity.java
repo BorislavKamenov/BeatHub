@@ -33,6 +33,8 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private final static int SHUFFLE_OFF = 3;
     private final static int SHUFFLE_ON = 4;
 
+
+
     private int repeatMode = REPEAT_OFF;
     private int shuffleMode = SHUFFLE_OFF;
 
@@ -47,6 +49,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private FileDescriptor fd;
     private Handler handler = new Handler();
+    private int currentPlaySongTabIndex;
     private int currentPlayingSongPosition;
     private TextView currentDurationLabel;
     private TextView totalDurationLabel;
@@ -100,7 +103,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         mediaPlayer.setOnCompletionListener(this);
 
         // By default play first song
-
+        playSong(new BeatHubBaseHelper(this).getLastSong(indexOfLastPlayedSong()), 0);
 
         buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
         buttonRepeat.setBackgroundResource(R.drawable.repeat_button_off);
@@ -348,12 +351,10 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         }
     }
 
-    private ArrayList<Song> indexOfLastPlayedSong() {
+    private int indexOfLastPlayedSong() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        ArrayList<Song> lastSong = new ArrayList<Song>();
-        int lastSongIndex = prefs.getInt("lastSong", 0);
-        lastSong.add(songList.get(lastSongIndex));
-        return lastSong;
+
+        return prefs.getInt("lastSong", 0);
     }
 
     private void saveLastPlayedSong(int position) {

@@ -3,7 +3,6 @@ package com.beathub.kamenov;
 import android.app.Fragment;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -77,8 +76,7 @@ public class FragmentAllSongs extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((MainActivity) getActivity()).playSong(position);
-                Log.i("FragmentAllSongs clicked position in listview", position + "");
+                ((MainActivity) getActivity()).playSong(songs, position);
             }
         });
 
