@@ -38,17 +38,6 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
             COLUMN_PATH + " TEXT " + " ) ";
     protected static final String UPDATE_STATEMENT_FOLDERS = " DELETE IF EXISTS TABLE " + TABLE_NAME_FOLDERS;
 
-    //table LastSong
-    private static final String TABLE_NAME_LAST_SONG = "last_played_song";
-
-    private static final String LAST_PLAYED_FILE_ID = "last_played_song_id";
-
-    protected static final String CREATE_STATEMENT_LAST_SONG = " CREATE TABLE " + TABLE_NAME_LAST_SONG +
-            " ( " + LAST_PLAYED_FILE_ID + " INTEGER " + " ) ";
-
-    protected static final String UPDATE_STATEMENT_LAST_SONG_PLAYED = " DELETE IF EXISTS TABLE " +
-            TABLE_NAME_LAST_SONG;
-
     //table files
     private static final String TABLE_NAME_FILES = "files";
     private static final String COLUMN_RAW_NAME = "raw_name_file";
@@ -125,7 +114,6 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
             CREATE_STATEMENT_PLAYLISTS,
             CREATE_STATEMENT_PLAYLISTS_ENTRIES,
             CREATE_STATEMENT_ARTISTS,
-            CREATE_STATEMENT_LAST_SONG
     };
 
     public final String[] update_tables = {
@@ -135,7 +123,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
             UPDATE_STATEMENT_PLAYLISTS,
             UPDATE_STATEMENT_PLAYLISTS_ENTRIES,
             UPDATE_STATEMENT_ARTISTS,
-            UPDATE_STATEMENT_LAST_SONG_PLAYED};
+    };
 
 
     @Override
@@ -429,9 +417,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
                 while (!getSongCursor.isAfterLast()) {
                     if (getSongCursor.getInt(getSongCursor.getColumnIndex(COLUMN_ID)) == songId) {
 
-
-                        Song song = getSongParameters(db);
-                        songsFromPlayList.add(song);
+                        songsFromPlayList.add(getSongParameters(db));
 
 
                     }
@@ -448,6 +434,19 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         plalyListIdCursor.close();
         db.close();
         return songsFromPlayList;
+    }
+
+    public ArrayList<Song> getLastSong(int idOfSong) {
+        ArrayList<Song> lastSong = new ArrayList<Song>(1);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor getSongCursor = db.query(TABLE_NAME_FILES, new String[]{COLUMN_ID}, null, null, null, null, null);
+
+        getSongCursor.moveToPosition(idOfSong);
+        lastSong.add(getSongParameters(db));
+
+        return lastSong;
     }
 
 }
