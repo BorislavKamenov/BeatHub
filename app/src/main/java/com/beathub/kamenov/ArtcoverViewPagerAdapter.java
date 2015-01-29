@@ -81,7 +81,7 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
             cur = getRootView(position, 0);
             next = getRootView(position + 1, 1);
             prev = getRootView(position - 1, -1);
-           // nextnext = getRootView(position + 2);
+            // nextnext = getRootView(position + 2);
 
             ViewHelper.setAlpha(cur, maxAlpha - 0.5f * positionOffset);
             ViewHelper.setAlpha(next, minAlpha + 0.5f * positionOffset);
@@ -137,7 +137,7 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
 
 /*
  * to get finger swipe direction
- */
+ *//*
         if (lastPage < position) {
             swipedLeft = true;
             //((MainActivity)context.getActivity()).playNextSong();
@@ -147,7 +147,7 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
             //((MainActivity)context.getActivity()).playNextSong();
         }
 
-        lastPage = position;
+        lastPage = position;*/
 
     }
 
@@ -158,7 +158,7 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
     //-1 - left page
     //0 - current page
     //1 - right page
-    private MyLinearLayout getRootView(int position,int type) {
+    private MyLinearLayout getRootView(int position, int type) {
 
         MyLinearLayout ly;
         try {
