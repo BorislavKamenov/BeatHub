@@ -44,8 +44,8 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
         this.fm = fm;
         this.context = context;
 
-        //initialise lastpage
-        this.lastPage = ((MainActivity) context.getActivity()).getSongList().size() - 1;
+        //initialise lastpage KOMENTIRAH GO DA TRUGNE
+//        this.lastPage = ((MainActivity) context.getActivity()).getSongList().size() - 1;
 
     }
 
