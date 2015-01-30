@@ -13,24 +13,32 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import DataBases.BeatHubBaseHelper;
 
 public class MainListsFragment extends Fragment {
 
     private static BeatHubBaseHelper db;
+    private static ViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.view_pager_fragment, null);
 
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+        viewPager = (ViewPager) view.findViewById(R.id.pager);
+
+        Toast.makeText(getActivity().getApplicationContext(), String.valueOf(viewPager.getCurrentItem()), Toast.LENGTH_LONG).show();
         // Set the ViewPagerAdapter into ViewPager
         viewPager.setAdapter(new ViewPagerListsFragments(getChildFragmentManager()));
         viewPager.setOffscreenPageLimit(2);
         db = new BeatHubBaseHelper(getActivity());
 
         return view;
+    }
+
+    protected static ViewPager getViewPager() {
+        return viewPager;
     }
 
     protected static void addToPlayListDialog(final Activity activity, final Song song) {

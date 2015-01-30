@@ -294,8 +294,6 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
                 listOfSongs.add(song);
 
-                Log.i("getArrayList", "readed");
-
             } while (cursor.moveToNext());
         }
 
@@ -434,6 +432,20 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         plalyListIdCursor.close();
         db.close();
         return songsFromPlayList;
+    }
+
+    public ArrayList<Song> getFirstSongFile() {
+        ArrayList<Song> firstSong = new ArrayList<Song>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor firstSongCursor = db.query(TABLE_NAME_FILES, new String[]{COLUMN_ID}, null, null, null, null, null);
+
+        firstSongCursor.moveToFirst();
+
+        firstSong.add(getSongParameters(db));
+        Log.i("FIRST SONG", firstSong.toString());
+        return firstSong;
     }
 
     public ArrayList<Song> getLastSong(int idOfSong) {

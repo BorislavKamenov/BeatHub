@@ -53,17 +53,6 @@ public class FragmentAllSongs extends Fragment {
         listView.setAdapter(songAdapter);
         registerForContextMenu(listView);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                db = new BeatHubBaseHelper(getActivity().getApplicationContext());
-                db.addFolderPath("storage/extSdCard/Music");
-                db.importFilesInDBByFolders(getActivity().getContentResolver());
-            }
-        });
-
-
         return view;
     }
 
