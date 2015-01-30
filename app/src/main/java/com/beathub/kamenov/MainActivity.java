@@ -3,6 +3,7 @@ package com.beathub.kamenov;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -33,7 +34,12 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private final static int SHUFFLE_OFF = 3;
     private final static int SHUFFLE_ON = 4;
 
+    private final static String TAB_ID = "tabId";
+    private final static String LAST_SONG_ID = "lastSong";
 
+    private final static int ALL_SONGS_TAB = 0;
+    private final static int PLAYLISTS_TAB = 1;
+    private final static int ALBUMS_TAB = 2;
 
     private int repeatMode = REPEAT_OFF;
     private int shuffleMode = SHUFFLE_OFF;
@@ -49,7 +55,6 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private FileDescriptor fd;
     private Handler handler = new Handler();
-    private int currentPlaySongTabIndex;
     private int currentPlayingSongPosition;
     private TextView currentDurationLabel;
     private TextView totalDurationLabel;
@@ -103,6 +108,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         mediaPlayer.setOnCompletionListener(this);
 
         // By default play first song
+
         playSong(new BeatHubBaseHelper(this).getLastSong(indexOfLastPlayedSong()), 0);
 
         buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
@@ -224,7 +230,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     @Override
     protected void onPause() {
-        saveLastPlayedSong(currentPlayingSongPosition);
+        saveLastPlayedSong(currentPlayingSongPosition, MainListsFragment.getViewPager().getCurrentItem());
         super.onPause();
     }
 
@@ -353,14 +359,15 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     private int indexOfLastPlayedSong() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
-        return prefs.getInt("lastSong", 0);
+        return prefs.getInt(LAST_SONG_ID, 0);
     }
 
-    private void saveLastPlayedSong(int position) {
+
+    private void saveLastPlayedSong(int position, int tabId) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         SharedPreferences.Editor edit = prefs.edit();
-        edit.putInt("lastSong", position);
+        edit.putInt(TAB_ID, tabId);
+        edit.putInt(LAST_SONG_ID, position);
         edit.commit();
     }
 
@@ -396,6 +403,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         // CHANGE FOR YOUR PHONE
         //NE E TRUDNO SAMO DA MI ZAKOMENTIRASH DIRECTORYTO :D
         // db.addFolderPath("/storage/extSdCard/Music");
+
         db.addFolderPath("/storage/emulated/0/Music/");
         db.importFilesInDBByFolders(getContentResolver());
     }
