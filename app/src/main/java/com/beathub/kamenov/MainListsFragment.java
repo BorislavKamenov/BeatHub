@@ -62,32 +62,25 @@ public class MainListsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 createNewPlaylist(activity, song, playlists);
-
             }
         });
-        playlists.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        playlists.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+             @Override
+             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                 ((MainActivity) activity).showToastWithMessage("Added");
+                 db.addSongToPlaylist((int) song.getId(), position + 1);
 
-                                         {
-                                             @Override
-                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                 db.addSongToPlaylist((int) song.getId(), position + 1);
-                                                 ((MainActivity) activity).showToastWithMessage("Added");
+                 //refresh fragments to update the info
+                 ((MainActivity) activity).refreshMainListsFragment();
+             }
+        });
 
-                                             }
-                                         }
-
-        );
-
-        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }
-
-        );
+        dialog.setNegativeButton("Close", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
         dialog.setView(view);
         dialog.create();
         dialog.show();
@@ -115,15 +108,17 @@ public class MainListsFragment extends Fragment {
                     //create new playlist
                     db.addPlaylist(playlistName.getText().toString());
 
-                    int playlist_id = db.getLastFreePositionToAddPlaylist();
+                    int playlist_id = db.countOfPlaylist();
 
                     db.addSongToPlaylist((int) songForAdding.getId(), playlist_id);
+
+                    //refresh fragments to update the info
                     ((MainActivity) activity).refreshMainListsFragment();
                 }
+
                 ((MainActivity) activity).showToastWithMessage("Created");
                 PlaylistsAdapter newPlaylistAdapter = new PlaylistsAdapter(activity, R.layout.playlist_simple_row_item, db.getAllPlaylists());
                 listPlayLists.setAdapter(newPlaylistAdapter);
-
 
             }
         });

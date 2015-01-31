@@ -13,7 +13,15 @@
 
     <string-array name="context_menu_items">
         <item>Add to Playlist</item>
-        <item>Ringtone</item>
+        <item>Set as Ringtone</item>
+        <item>Send</item>
+        <item>Delete</item>
+    </string-array>
+
+    <string-array name="playlist_context_menu_items">
+        <item>Add to Playlist</item>
+        <item>Remove from Playlist</item>
+        <item>Set as Ringtone</item>
         <item>Send</item>
         <item>Delete</item>
     </string-array>

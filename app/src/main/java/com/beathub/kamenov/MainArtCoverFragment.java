@@ -27,12 +27,10 @@ public class MainArtCoverFragment extends Fragment {
 
         viewPager = (ViewPager) view.findViewById(R.id.artcover_main_viewpager);
 
-        //ZAKOMENTIRANO ZA DA VURVI
-
-      /*  adapter = new ArtcoverViewPagerAdapter(this, getChildFragmentManager());
+        adapter = new ArtcoverViewPagerAdapter(this, getChildFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(adapter);
-*/
+
         // Set current item to the middle page so we can fling to both
         // directions left and right
         //viewPager.setCurrentItem(((MainActivity)getActivity()).getCurrentPlayingSongPosition());

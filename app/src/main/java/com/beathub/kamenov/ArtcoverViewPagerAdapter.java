@@ -44,8 +44,8 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
         this.fm = fm;
         this.context = context;
 
-        //initialise lastpage KOMENTIRAH GO DA TRUGNE
-//        this.lastPage = ((MainActivity) context.getActivity()).getSongList().size() - 1;
+        //initialise lastpage
+        this.lastPage = ((MainActivity) context.getActivity()).getCurrentPlayedListOfSongs().size() - 1;
 
     }
 
@@ -70,7 +70,7 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
 
     @Override
     public int getCount() {
-        return ((MainActivity) context.getActivity()).getSongList().size();
+        return ((MainActivity)context.getActivity()).getCurrentPlayedListOfSongs().size();
     }
 
     @Override
@@ -137,17 +137,17 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
 
 /*
  * to get finger swipe direction
- *//*
+ */
         if (lastPage < position) {
             swipedLeft = true;
-            //((MainActivity)context.getActivity()).playNextSong();
+            ((MainActivity)context.getActivity()).playNextSong();
 
         } else if (lastPage > position) {
             swipedLeft = false;
-            //((MainActivity)context.getActivity()).playNextSong();
+            ((MainActivity)context.getActivity()).playNextSong();
         }
 
-        lastPage = position;*/
+        lastPage = position;
 
     }
 
