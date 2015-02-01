@@ -23,9 +23,18 @@ public class FragmentAlbums extends Fragment{
         FragmentGridViewAlbums f = new FragmentGridViewAlbums();
         FragmentManager fm = getChildFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.add(R.id.album_fragment_container, f);
+        ft.add(R.id.album_fragment_container_frame_layout, f);
         ft.commit();
 
         return view;
+    }
+
+    public static void openFragment(Fragment f, FragmentManager childFragmentManager){
+
+        FragmentManager fm = childFragmentManager;
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.album_fragment_container_frame_layout, f);
+        ft.commit();
+
     }
 }

@@ -70,6 +70,7 @@ public class AlbumsGridAdapter extends BaseAdapter {
 
         holder.albumImage.setImageResource(R.drawable.default_album_image);
 
+        //the image of the album is the artcover of the first song in this album
         String pathToOneSongFromAlbum = db.getPathOfOneSongInAlbum(album.getAlbumId());
 
         loadBitmap(pathToOneSongFromAlbum, holder.albumImage);

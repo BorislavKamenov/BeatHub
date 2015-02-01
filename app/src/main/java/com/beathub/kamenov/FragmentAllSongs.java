@@ -47,9 +47,9 @@ public class FragmentAllSongs extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.allplaylilsts_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_allsongs, container, false);
 
-        listView = (ListView) view.findViewById(R.id.all_playlists_listview_in_fragment);
+        listView = (ListView) view.findViewById(R.id.list_view_all_songs);
         songAdapter = new SongAdapter(getActivity().getApplicationContext(), R.layout.song_simple_row_item, songs);
         listView.setAdapter(songAdapter);
         registerForContextMenu(listView);
@@ -74,7 +74,7 @@ public class FragmentAllSongs extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
-        if (v.getId() == R.id.all_playlists_listview_in_fragment) {
+        if (v.getId() == R.id.list_view_all_songs) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             String[] menuItems = getResources().getStringArray(R.array.context_menu_items);
 

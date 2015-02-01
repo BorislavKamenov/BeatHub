@@ -373,7 +373,6 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                         break;
                 }
         }
-
     }
 
     private void firstInstalling() {
@@ -495,7 +494,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     public void playNextSong() {
 
-        if (currentPlayingSongPosition < allSongsList.size() - 1) {
+        if (currentPlayingSongPosition < currentPlayedListOfSongs.size() - 1) {
             int pos = currentPlayingSongPosition;
             playSong(currentPlayedListOfSongs, pos + 1);
         } else {
@@ -507,7 +506,6 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         if (!isBackSide) {
             refreshArtCoverFragment();
         }
-
     }
 
     public void playPrevSong() {
@@ -516,7 +514,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
             playSong(currentPlayedListOfSongs, pos - 1);
         } else {
             playSong(currentPlayedListOfSongs, currentPlayedListOfSongs.size() - 1);
-            currentPlayingSongPosition = allSongsList.size() - 1;
+            currentPlayingSongPosition = currentPlayedListOfSongs.size() - 1;
         }
 
         if (!isBackSide) {

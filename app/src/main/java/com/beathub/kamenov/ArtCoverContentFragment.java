@@ -26,8 +26,7 @@ public class ArtCoverContentFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         if (container == null) {
             return null;
@@ -37,6 +36,7 @@ public class ArtCoverContentFragment extends Fragment {
 
         artcover = (ImageView) layout.findViewById(R.id.artwork_viewpager_imageview);
 
+        //set song image
         loadBitmap(((MainActivity)getActivity())
                 .getCurrentPlayedListOfSongs()
                 .get(((MainActivity)getActivity()).getCurrentPlayingSongPosition())

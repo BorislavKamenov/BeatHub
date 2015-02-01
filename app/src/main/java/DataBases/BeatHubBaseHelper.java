@@ -377,8 +377,9 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
 
+                int playlistId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
                 String playlistName = cursor.getString(cursor.getColumnIndex(COLUMN_PLAYLIST_NAME));
-                Playlist playlist = new Playlist(playlistName);
+                Playlist playlist = new Playlist(playlistName, playlistId);
                 playlists.add(playlist);
 
             } while (cursor.moveToNext());
@@ -407,7 +408,7 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
             do {
                 int songId = playlistCursor.getInt(playlistCursor.getColumnIndex(COLUMN_FILE_ID));
-                songsFromPlayList.add(getSongParameters(db, songId - 1));
+                songsFromPlayList.add(getSongParameters(db, songId));
 
             }while (playlistCursor.moveToNext());
         }
@@ -429,14 +430,6 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
         db.insert(TABLE_NAME_PLAYLISTS_ENTRIES, null, contentValues);
         db.close();
-    }
-
-    public int countOfPlaylist() {
-
-        SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.query(TABLE_NAME_PLAYLISTS, null, null, null, null, null, null);
-
-        return cursor.getCount();
     }
 
     public ArrayList<Album> getAllAlbums(){
@@ -499,17 +492,10 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
                 null, null, null);
 
         cursor.moveToFirst();
-//        if(cursor.moveToFirst()){
-//
-//            do{
 
-                int cursorPos = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
-                Song s = getSongParameters(db, cursorPos);
+        int cursorPos = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+        Song s = getSongParameters(db, cursorPos);
 
-//
-//            }while(cursor.moveToNext());
-//
-//        }
         cursor.close();
 
         return s.getPath();

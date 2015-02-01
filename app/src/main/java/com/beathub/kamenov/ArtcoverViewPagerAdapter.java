@@ -57,7 +57,6 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
         else {
             scale = MainArtCoverFragment.SMALL_SCALE;
             IsBlured = true;
-
         }
 
         Fragment curFragment = ArtCoverContentFragment.newInstance(context, position, scale, IsBlured);

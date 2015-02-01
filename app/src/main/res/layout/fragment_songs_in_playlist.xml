@@ -4,23 +4,16 @@
     android:background="@color/very_dark_blue">
 
     <RelativeLayout
-        android:id="@+id/current_selected_album_relative_layout"
+        android:id="@+id/current_selected_playlist_relative_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/current_album_selector">
 
-        <ImageView
-            android:id="@+id/current_album_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:adjustViewBounds="true"/>
-
         <TextView
-            android:id="@+id/current_album_name"
+            android:id="@+id/current_playlist_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:layout_toRightOf="@id/current_album_image"
             android:textColor="@color/light_blue"
             android:textStyle="bold"
             android:layout_marginLeft="5dp"
@@ -28,20 +21,20 @@
             android:lines="1"/>
 
         <TextView
-            android:id="@+id/count_of_songs_in_current_album"
+            android:id="@+id/count_of_songs_in_current_playlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="17sp"
-            android:layout_alignLeft="@id/current_album_name"
-            android:layout_below="@id/current_album_name"
+            android:layout_alignLeft="@id/current_playlist_name"
+            android:layout_below="@id/current_playlist_name"
             android:textColor="@color/light_light_gray"/>
 
         </RelativeLayout>
 
     <ListView
-        android:id="@+id/songs_in_album_listview"
+        android:id="@+id/songs_in_playlist_listview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_below="@id/current_selected_album_relative_layout"/>
+        android:layout_below="@id/current_selected_playlist_relative_layout"/>
 
 </RelativeLayout>

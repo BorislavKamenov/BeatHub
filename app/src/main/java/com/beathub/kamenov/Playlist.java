@@ -2,12 +2,12 @@ package com.beathub.kamenov;
 
 public class Playlist {
 
+    private int playlistId;
     private String name;
-    private int Id;
 
-    public Playlist(String name) {
+    public Playlist(String name, int playlistId) {
         this.name = name;
-        //countOfSongs = 0;
+        this.playlistId = playlistId;
     }
 
 //    Playlist(String name, int countOfSongs){
@@ -19,4 +19,7 @@ public class Playlist {
         return name;
     }
 
+    public int getPlaylistId() {
+        return playlistId;
+    }
 }
