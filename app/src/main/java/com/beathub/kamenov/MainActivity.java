@@ -404,7 +404,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         //NE E TRUDNO SAMO DA MI ZAKOMENTIRASH DIRECTORYTO :D
         // db.addFolderPath("/storage/extSdCard/Music");
 
-        db.addFolderPath("/storage/emulated/0/Music/");
+        db.addFolderPath("/storage/emulated/0/Music/Black");
         db.importFilesInDBByFolders(getContentResolver());
     }
 
