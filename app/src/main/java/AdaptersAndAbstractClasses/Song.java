@@ -1,4 +1,4 @@
-package com.beathub.kamenov;
+package AdaptersAndAbstractClasses;
 
 public class Song {
 	

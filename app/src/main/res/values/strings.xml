@@ -8,12 +8,20 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_to_playlist">Add to Playlist</string>
     <string name="create_playlist">Create New Playlist</string>
-
+    <string name="get_started">Get Started</string>
     <string name="pagermargin">0</string>
 
     <string-array name="context_menu_items">
         <item>Add to Playlist</item>
-        <item>Ringtone</item>
+        <item>Set as Ringtone</item>
+        <item>Send</item>
+        <item>Delete</item>
+    </string-array>
+
+    <string-array name="playlist_context_menu_items">
+        <item>Add to Playlist</item>
+        <item>Remove from Playlist</item>
+        <item>Set as Ringtone</item>
         <item>Send</item>
         <item>Delete</item>
     </string-array>

@@ -1,9 +1,11 @@
-package com.beathub.kamenov;
+package Layouts;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+
+import Fragments.MainArtCoverFragment;
 
 public class MyLinearLayout extends LinearLayout {
 	private float scale = MainArtCoverFragment.BIG_SCALE;

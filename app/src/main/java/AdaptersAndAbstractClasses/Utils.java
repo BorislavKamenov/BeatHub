@@ -1,4 +1,4 @@
-package com.beathub.kamenov;
+package AdaptersAndAbstractClasses;
 
 /**
  * Created by Borislav on 21.1.2015 г..

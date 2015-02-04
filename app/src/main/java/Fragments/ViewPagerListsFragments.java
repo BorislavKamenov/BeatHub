@@ -1,8 +1,12 @@
-package com.beathub.kamenov;
+package Fragments;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.support.v13.app.FragmentPagerAdapter;
+
+import Fragments.FragmentAlbums;
+import Fragments.FragmentAllSongs;
+import Fragments.FragmentPlaylist;
 
 public class ViewPagerListsFragments extends FragmentPagerAdapter {
 

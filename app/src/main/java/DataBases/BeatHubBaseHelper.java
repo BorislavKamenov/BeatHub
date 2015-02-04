@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 
-import com.beathub.kamenov.Playlist;
-import com.beathub.kamenov.Song;
+import ObjectClasses.Album;
+import ObjectClasses.Playlist;
+import AdaptersAndAbstractClasses.Song;
 
 import java.util.ArrayList;
 
@@ -280,6 +280,58 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         cursor.close();
     }
 
+    private Song getSongParameters(SQLiteDatabase db, int positionOfCursor) {
+
+        Cursor cursor = db.query(TABLE_NAME_FILES,
+                null,
+                " _id = ? ",
+                new String[]{String.valueOf(positionOfCursor)},
+                null, null, null);
+
+        Song s = null;
+
+        if (cursor.moveToFirst()) {
+
+            do {
+
+                String folder_id = String.valueOf(cursor.getLong(cursor.getColumnIndex(COLUMN_FOLDER_ID)));
+                Cursor foldersCursor = db.query(TABLE_NAME_FOLDERS, null, " _id = ?", new String[]{folder_id}, null, null, null);
+                foldersCursor.moveToFirst();
+                String folderPath = foldersCursor.getString(foldersCursor.getColumnIndex(COLUMN_PATH));
+                foldersCursor.close();
+
+                //get artist name
+                String artist_id = String.valueOf(cursor.getLong(cursor.getColumnIndex(COLUMN_ARTIST_ID)));
+                Cursor artistsCursor = db.query(TABLE_NAME_ARTISTS, null, " _id = ?", new String[]{artist_id}, null, null, null);
+                artistsCursor.moveToFirst();
+                String artistName = artistsCursor.getString(artistsCursor.getColumnIndex(COLUMN_ARTIST_NAME));
+                artistsCursor.close();
+
+                //get title of the song
+                String title = cursor.getString(cursor.getColumnIndex(COLUMN_SONG_TITLE));
+
+                //get song duration
+                long duration = cursor.getLong(cursor.getColumnIndex(COLUMN_DURATION));
+
+                //get song id
+                long id = cursor.getLong(cursor.getColumnIndex(COLUMN_ID));
+
+                //get absolute path of the song
+                String songPath = folderPath + "/" + cursor.getString(cursor.getColumnIndex(COLUMN_RAW_NAME));
+
+                s = new Song(id, songPath, title, artistName, duration);
+
+                if (s != null) {
+                    break;
+                }
+
+            } while (cursor.moveToNext());
+        }
+
+        //create new Song object
+        return s;
+    }
+
     public ArrayList<Song> getAllSongs() {
 
         SQLiteDatabase db = getReadableDatabase();
@@ -287,10 +339,10 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(TABLE_NAME_FILES, null, null, null, null, null, null);
 
-
         if (cursor.moveToFirst()) {
             do {
-                Song song = getSongParameters(db);
+                int position = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+                Song song = getSongParameters(db, position);
 
                 listOfSongs.add(song);
 
@@ -303,49 +355,40 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         return listOfSongs;
     }
 
-    private Song getSongParameters(SQLiteDatabase db) {
-
-        Cursor cursor = db.query(TABLE_NAME_FILES, null, null, null, null, null, null);
-        cursor.moveToFirst();
-        //get folder's path where the song is//String folder_id = String.valueOf(cursor.getLong(cursor.getColumnIndex(COLUMN_FOLDER_ID)));
-        String folder_id = String.valueOf(cursor.getLong(cursor.getColumnIndex(COLUMN_FOLDER_ID)));
-        Cursor foldersCursor = db.query(TABLE_NAME_FOLDERS, null, " _id = ?", new String[]{folder_id}, null, null, null);
-        foldersCursor.moveToFirst();
-        String folderPath = foldersCursor.getString(foldersCursor.getColumnIndex(COLUMN_PATH));
-        foldersCursor.close();
-
-        //get artist name
-        String artist_id = String.valueOf(cursor.getLong(cursor.getColumnIndex(COLUMN_ARTIST_ID)));
-        Cursor artistsCursor = db.query(TABLE_NAME_ARTISTS, null, " _id = ?", new String[]{artist_id}, null, null, null);
-        artistsCursor.moveToFirst();
-        String artistName = artistsCursor.getString(artistsCursor.getColumnIndex(COLUMN_ARTIST_NAME));
-        artistsCursor.close();
-
-        //get title of the song
-        String title = cursor.getString(cursor.getColumnIndex(COLUMN_SONG_TITLE));
-
-        //get song duration
-        long duration = cursor.getLong(cursor.getColumnIndex(COLUMN_DURATION));
-
-        //get song id
-        long id = cursor.getLong(cursor.getColumnIndex(COLUMN_ID));
-
-        //get absolute path of the song
-        String songPath = folderPath + "/" + cursor.getString(cursor.getColumnIndex(COLUMN_RAW_NAME));
-
-        //create new Song object
-        return new Song(id, songPath, title, artistName, duration);
-    }
-
     public void addPlaylist(String name) {
 
         SQLiteDatabase db = getWritableDatabase();
 
-        ContentValues content = new ContentValues();
-        content.put(COLUMN_PLAYLIST_NAME, name);
+        Cursor cursor = db.query(TABLE_NAME_PLAYLISTS, new String[]{COLUMN_PLAYLIST_NAME}, null, null, null, null, null);
 
-        db.insert(TABLE_NAME_PLAYLISTS, null, content);
+        boolean ifExist = false;
+
+        if (cursor.moveToFirst()) {
+
+            do {
+                if (cursor.getString(cursor.getColumnIndex(COLUMN_PLAYLIST_NAME)).equals(name)) {
+                    ifExist = true;
+                    break;
+                } else {
+                    cursor.moveToNext();
+                }
+
+            } while (!cursor.isAfterLast());
+        }
+        if (!ifExist) {
+            ContentValues content = new ContentValues();
+            content.put(COLUMN_PLAYLIST_NAME, name);
+
+            db.insert(TABLE_NAME_PLAYLISTS, null, content);
+        }
         db.close();
+    }
+
+    public void deletePlaylist(String name) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.delete(TABLE_NAME_PLAYLISTS, COLUMN_PLAYLIST_NAME + "=" + name, new String[]{name});
+
     }
 
     public ArrayList<Playlist> getAllPlaylists() {
@@ -359,8 +402,9 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
 
+                int playlistId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
                 String playlistName = cursor.getString(cursor.getColumnIndex(COLUMN_PLAYLIST_NAME));
-                Playlist playlist = new Playlist(playlistName);
+                Playlist playlist = new Playlist(playlistName, playlistId);
                 playlists.add(playlist);
 
             } while (cursor.moveToNext());
@@ -370,6 +414,34 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return playlists;
+    }
+
+    public ArrayList<Song> getSongsFromPlaylist(int playlistId) {
+
+        ArrayList<Song> songsFromPlayList = new ArrayList<>();
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor playlistCursor = db.query(
+                TABLE_NAME_PLAYLISTS_ENTRIES,
+                new String[]{COLUMN_PLAYLIST_ID, COLUMN_FILE_ID},
+                " playlist_id = ? ",
+                new String[]{String.valueOf(playlistId)},
+                null, null, null);
+
+        if (playlistCursor.moveToFirst()) {
+
+            do {
+                int songId = playlistCursor.getInt(playlistCursor.getColumnIndex(COLUMN_FILE_ID));
+                songsFromPlayList.add(getSongParameters(db, songId));
+
+            } while (playlistCursor.moveToNext());
+        }
+
+        playlistCursor.close();
+        db.close();
+
+        return songsFromPlayList;
     }
 
     public void addSongToPlaylist(int song_id, int playlist_id) {
@@ -385,80 +457,73 @@ public class BeatHubBaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public int getLastFreePositionToAddPlaylist() {
+    public ArrayList<Album> getAllAlbums() {
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        ArrayList<Album> albums = new ArrayList<>();
+
+        Cursor albumsCursor = db.query(TABLE_NAME_ALBUMS, null, null, null, null, null, null);
+
+        if (albumsCursor.moveToFirst()) {
+
+            do {
+                int album_id = albumsCursor.getInt(albumsCursor.getColumnIndex(COLUMN_ID));
+                String albumName = albumsCursor.getString(albumsCursor.getColumnIndex(COLUMN_ALBUM_NAME));
+                String artistName = albumsCursor.getString(albumsCursor.getColumnIndex(COLUMN_ARTIST_OF_ALBUM));
+
+                albums.add(new Album(album_id, albumName, artistName));
+
+            } while (albumsCursor.moveToNext());
+        }
+        albumsCursor.close();
+
+        return albums;
+    }
+
+    public ArrayList<Song> getSongsFromAlbum(int album_id) {
 
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.query(TABLE_NAME_PLAYLISTS, null, null, null, null, null, null);
 
-        return cursor.getCount();
-    }
+        ArrayList<Song> songs = new ArrayList<>();
 
-    public ArrayList<Song> getSongsFromPlaylist(int playlistId) {
+        Cursor allSongsCursor = db.query(TABLE_NAME_FILES,
+                null,
+                " album_id = ?",
+                new String[]{String.valueOf(album_id)},
+                null, null, null);
 
-        ArrayList<Song> songsFromPlayList = new ArrayList<Song>();
+        if (allSongsCursor.moveToFirst()) {
+            do {
+                int position = allSongsCursor.getInt(allSongsCursor.getColumnIndex(COLUMN_ID));
+                Song song = getSongParameters(db, position);
+                songs.add(song);
 
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        //WRITE METHOD FOR NO SAME PLAYLISTS_N AME
-        Cursor plalyListIdCursor = db.query(TABLE_NAME_PLAYLISTS_ENTRIES, new String[]{COLUMN_PLAYLIST_ID, COLUMN_FILE_ID}, null, null, null, null, null);
-        plalyListIdCursor.moveToFirst();
-
-        while (!plalyListIdCursor.isAfterLast()) {
-
-            if (plalyListIdCursor.getInt(plalyListIdCursor.getColumnIndex(COLUMN_PLAYLIST_ID)) == playlistId) {
-
-                int songId = plalyListIdCursor.getInt(plalyListIdCursor.getColumnIndex(COLUMN_FILE_ID));
-
-                Cursor getSongCursor = db.query(TABLE_NAME_FILES, new String[]{COLUMN_ID}, null, null, null, null, null);
-                getSongCursor.moveToFirst();
-
-                while (!getSongCursor.isAfterLast()) {
-                    if (getSongCursor.getInt(getSongCursor.getColumnIndex(COLUMN_ID)) == songId) {
-
-                        songsFromPlayList.add(getSongParameters(db));
-
-
-                    }
-                    getSongCursor.moveToNext();
-                }
-                getSongCursor.close();
-
-            }
-            plalyListIdCursor.moveToNext();
-
-
+            } while (allSongsCursor.moveToNext());
         }
-        plalyListIdCursor.close();
-        plalyListIdCursor.close();
-        db.close();
-        return songsFromPlayList;
+        allSongsCursor.close();
+
+        return songs;
     }
 
-    public ArrayList<Song> getFirstSongFile() {
-        ArrayList<Song> firstSong = new ArrayList<Song>();
+    public String getPathOfOneSongInAlbum(int album_id) {
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
 
-        Cursor firstSongCursor = db.query(TABLE_NAME_FILES, new String[]{COLUMN_ID}, null, null, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME_FILES,
+                null,
+                " album_id = ?",
+                new String[]{String.valueOf(album_id)},
+                null, null, null);
 
-        firstSongCursor.moveToFirst();
+        cursor.moveToFirst();
 
-        firstSong.add(getSongParameters(db));
-        Log.i("FIRST SONG", firstSong.toString());
-        return firstSong;
-    }
+        int cursorPos = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+        Song s = getSongParameters(db, cursorPos);
 
-    public ArrayList<Song> getLastSong(int idOfSong) {
-        ArrayList<Song> lastSong = new ArrayList<Song>(1);
+        cursor.close();
 
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor getSongCursor = db.query(TABLE_NAME_FILES, new String[]{COLUMN_ID}, null, null, null, null, null);
-
-        getSongCursor.moveToPosition(idOfSong);
-        lastSong.add(getSongParameters(db));
-
-        return lastSong;
+        return s.getPath();
     }
 
 }

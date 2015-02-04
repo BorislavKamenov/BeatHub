@@ -1,4 +1,4 @@
-package com.beathub.kamenov;
+package AdaptersAndAbstractClasses;
 
 
 import android.app.Fragment;
@@ -6,7 +6,13 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
+import com.beathub.kamenov.MainActivity;
+import com.beathub.kamenov.R;
 import com.nineoldandroids.view.ViewHelper;
+
+import Fragments.ArtCoverContentFragment;
+import Fragments.MainArtCoverFragment;
+import Layouts.MyLinearLayout;
 
 public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
         ViewPager.OnPageChangeListener {
@@ -44,8 +50,8 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
         this.fm = fm;
         this.context = context;
 
-        //initialise lastpage KOMENTIRAH GO DA TRUGNE
-//        this.lastPage = ((MainActivity) context.getActivity()).getSongList().size() - 1;
+        //initialise lastpage
+        this.lastPage = ((MainActivity) context.getActivity()).getCurrentPlayedListOfSongs().size() - 1;
 
     }
 
@@ -57,7 +63,6 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
         else {
             scale = MainArtCoverFragment.SMALL_SCALE;
             IsBlured = true;
-
         }
 
         Fragment curFragment = ArtCoverContentFragment.newInstance(context, position, scale, IsBlured);
@@ -70,7 +75,7 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
 
     @Override
     public int getCount() {
-        return ((MainActivity) context.getActivity()).getSongList().size();
+        return ((MainActivity)context.getActivity()).getCurrentPlayedListOfSongs().size();
     }
 
     @Override
@@ -137,17 +142,17 @@ public class ArtcoverViewPagerAdapter extends FragmentPagerAdapter implements
 
 /*
  * to get finger swipe direction
- *//*
+ */
         if (lastPage < position) {
             swipedLeft = true;
-            //((MainActivity)context.getActivity()).playNextSong();
+            ((MainActivity)context.getActivity()).playNextSong();
 
         } else if (lastPage > position) {
             swipedLeft = false;
-            //((MainActivity)context.getActivity()).playNextSong();
+            ((MainActivity)context.getActivity()).playNextSong();
         }
 
-        lastPage = position;*/
+        lastPage = position;
 
     }
 

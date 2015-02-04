@@ -1,4 +1,4 @@
-package com.beathub.kamenov;
+package AdaptersAndAbstractClasses;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import ObjectClasses.Playlist;
+import com.beathub.kamenov.R;
 
 import java.util.ArrayList;
 
@@ -18,7 +21,7 @@ public class PlaylistsAdapter extends ArrayAdapter<Playlist> {
     private Context context;
     private ArrayList<Playlist> playlists;
 
-    PlaylistsAdapter(Context context, int layout_id, ArrayList<Playlist> playlists) {
+    public PlaylistsAdapter(Context context, int layout_id, ArrayList<Playlist> playlists) {
         super(context, layout_id, playlists);
         this.context = context;
         this.playlists = playlists;

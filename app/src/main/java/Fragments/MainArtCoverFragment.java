@@ -1,4 +1,4 @@
-package com.beathub.kamenov;
+package Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -6,6 +6,9 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import AdaptersAndAbstractClasses.ArtcoverViewPagerAdapter;
+import com.beathub.kamenov.R;
 
 public class MainArtCoverFragment extends Fragment {
 
@@ -27,12 +30,10 @@ public class MainArtCoverFragment extends Fragment {
 
         viewPager = (ViewPager) view.findViewById(R.id.artcover_main_viewpager);
 
-        //ZAKOMENTIRANO ZA DA VURVI
-
-      /*  adapter = new ArtcoverViewPagerAdapter(this, getChildFragmentManager());
+        adapter = new ArtcoverViewPagerAdapter(this, getChildFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.setOnPageChangeListener(adapter);
-*/
+
         // Set current item to the middle page so we can fling to both
         // directions left and right
         //viewPager.setCurrentItem(((MainActivity)getActivity()).getCurrentPlayingSongPosition());

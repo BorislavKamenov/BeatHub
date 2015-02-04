@@ -3,7 +3,6 @@ package com.beathub.kamenov;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
@@ -23,7 +22,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import AdaptersAndAbstractClasses.Song;
+import AdaptersAndAbstractClasses.Utils;
 import DataBases.BeatHubBaseHelper;
+import Fragments.FragmentAllSongs;
+import Fragments.MainArtCoverFragment;
+import Fragments.MainListsFragment;
 
 public class MainActivity extends FragmentActivity implements MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, SeekBar.OnSeekBarChangeListener {
 
@@ -34,9 +38,17 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private final static int SHUFFLE_OFF = 3;
     private final static int SHUFFLE_ON = 4;
 
+    private final static String SHARED_PREFS_LAST_PLAYED_SONG = "lastPlayedSong";
     private final static String TAB_ID = "tabId";
-    private final static String LAST_SONG_ID = "lastSong";
+    private final static String PLAYLIST_ID = "playlistId";
+    private final static String ALBUM_ID = "playlistId";
+    private final static String LAST_SONG_ID = "posOfSong";
 
+    private int currentTab = 0;
+    private int currentPlaylist = -1;
+    private int currentAlbum = -1;
+    private int randomIndexForSong = 0;
+    private int lastIndexForSongWhenShuffle = 0;
     private final static int ALL_SONGS_TAB = 0;
     private final static int PLAYLISTS_TAB = 1;
     private final static int ALBUMS_TAB = 2;
@@ -44,7 +56,9 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private int repeatMode = REPEAT_OFF;
     private int shuffleMode = SHUFFLE_OFF;
 
-    public ArrayList<Song> songList;
+    private ArrayList<Song> currentPlayedListOfSongs;
+    public ArrayList<Song> allSongsList;
+    public ArrayList<Song> playlistSongsList;
     public Song currentPlaylingSong;
 
     //card flip
@@ -69,17 +83,44 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     private TextView currSongArtist;
     private TextView numberOfSong;
 
-    private int seekForwardTime = 5000; // 5000 milliseconds
-    private int seekBackwardTime = 5000;
-
-    private int getCurrentPlaylingSongPosition;
-
-    public void setSongList(ArrayList<Song> songList) {
-        this.songList = songList;
+    public int getCurrentTab() {
+        return currentTab;
     }
 
-    public ArrayList<Song> getSongList() {
-        return songList;
+    public void setCurrentTab(int currentTab) {
+        this.currentTab = currentTab;
+    }
+
+    public int getCurrentAlbum() {
+        return currentAlbum;
+    }
+
+    public void setCurrentAlbum(int currentAlbum) {
+        this.currentAlbum = currentAlbum;
+    }
+
+    public int getCurrentPlaylist() {
+        return currentPlaylist;
+    }
+
+    public void setCurrentPlaylist(int currentPlaylist) {
+        this.currentPlaylist = currentPlaylist;
+    }
+
+    public ArrayList<Song> getCurrentPlayedListOfSongs() {
+        return currentPlayedListOfSongs;
+    }
+
+    public void setCurrentPlayedListOfSongs(ArrayList<Song> currentPlayedListOfSongs) {
+        this.currentPlayedListOfSongs = currentPlayedListOfSongs;
+    }
+
+    public void setAllSongsList(ArrayList<Song> songList) {
+        this.allSongsList = songList;
+    }
+
+    public ArrayList<Song> getAllSongsList() {
+        return allSongsList;
     }
 
     public Song getCurrentPlaylingSong() {
@@ -94,6 +135,10 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         return currentPlayingSongPosition;
     }
 
+    public void setCurrentPlayingSongPosition(int currentPlayingSongPosition) {
+        this.currentPlayingSongPosition = currentPlayingSongPosition;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,13 +148,13 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         setIdsForViews();
 
         firstInstalling();
+        initializeSongLists();
 
         progressBar.setOnSeekBarChangeListener(this);
         mediaPlayer.setOnCompletionListener(this);
 
-        // By default play first song
-
-        playSong(new BeatHubBaseHelper(this).getLastSong(indexOfLastPlayedSong()), 0);
+        // After install by default play first song
+        playSong(currentPlayedListOfSongs, 0);
 
         buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
         buttonRepeat.setBackgroundResource(R.drawable.repeat_button_off);
@@ -168,7 +213,16 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playNextSong();
+                if (repeatMode == REPEAT_OFF && !mediaPlayer.isPlaying() && currentPlayingSongPosition == currentPlayedListOfSongs.size() - 1) {
+                    playSong(allSongsList, 0);
+                }
+                if (shuffleMode == SHUFFLE_OFF) {
+                    playNextSong();
+                } else {
+                    randomIndexForSong = new Random().nextInt(currentPlayedListOfSongs.size());
+                    playSong(currentPlayedListOfSongs, randomIndexForSong);
+
+                }
             }
         });
 
@@ -176,7 +230,11 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         buttonPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                playPrevSong();
+                if (shuffleMode == SHUFFLE_OFF) {
+                    playPrevSong();
+                } else {
+                    playSong(currentPlayedListOfSongs, randomIndexForSong);
+                }
             }
         });
 
@@ -230,7 +288,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     @Override
     protected void onPause() {
-        saveLastPlayedSong(currentPlayingSongPosition, MainListsFragment.getViewPager().getCurrentItem());
+        saveLastPlayedSong(currentPlayingSongPosition, currentPlaylist, currentTab);
         super.onPause();
     }
 
@@ -275,7 +333,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     }
 
     /**
-     * When user stops moving the progress hanlder
+     * When user stops moving the progress handler
      */
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -302,7 +360,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                 switch (shuffleMode) {
 
                     case SHUFFLE_ON:
-                        playSong(songList, new Random().nextInt(songList.size()));
+                        playSong(currentPlayedListOfSongs, new Random().nextInt(currentPlayedListOfSongs.size()));
                         refreshArtCoverFragment();
                         break;
                     case SHUFFLE_OFF:
@@ -312,7 +370,7 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
             case REPEAT_CURR_SONG:
 
-                playSong(songList, currentPlayingSongPosition);
+                playSong(allSongsList, currentPlayingSongPosition);
                 refreshArtCoverFragment();
                 break;
 
@@ -321,21 +379,22 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                 switch (shuffleMode) {
 
                     case SHUFFLE_ON:
-                        playSong(songList, new Random().nextInt(songList.size()));
+                        playSong(currentPlayedListOfSongs, new Random().nextInt(currentPlayedListOfSongs.size()));
                         refreshArtCoverFragment();
                         break;
 
                     case SHUFFLE_OFF:
 
-                        if (currentPlayingSongPosition == (songList.size() - 1)) {
+                        if (currentPlayingSongPosition == (currentPlayedListOfSongs.size() - 1)) {
                             stopPlayer();
                         } else {
                             playNextSong();
                         }
                         break;
                 }
-        }
 
+
+        }
     }
 
     private void firstInstalling() {
@@ -348,78 +407,77 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
             edit.putBoolean("previouslyStarted", Boolean.TRUE);
             edit.commit();
 
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-            dbInit();
-//                }
-//            });
+            dbInit("/storage/emulated/0/Music");
         }
     }
 
-    private int indexOfLastPlayedSong() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        return prefs.getInt(LAST_SONG_ID, 0);
-    }
-
-
-    private void saveLastPlayedSong(int position, int tabId) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+    /**
+     * @param position    the position of the song in the list
+     * @param playlist_id the id of the playlist the last played song is from
+     * @param tabId       the id of the tab the last played song is from
+     */
+    private void saveLastPlayedSong(int position, int playlist_id, int tabId) {
+        SharedPreferences prefs = getSharedPreferences(SHARED_PREFS_LAST_PLAYED_SONG, 0);
         SharedPreferences.Editor edit = prefs.edit();
-        edit.putInt(TAB_ID, tabId);
         edit.putInt(LAST_SONG_ID, position);
+        edit.putInt(PLAYLIST_ID, playlist_id);
+        edit.putInt(TAB_ID, tabId);
         edit.commit();
     }
 
-    //card flip animation
-    private void flipCard() {
+    private void initializeSongLists() {
 
-        if (!isBackSide) {
-            getFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
-                    .replace(R.id.fragments_container, new MainListsFragment())
-                    .addToBackStack(null)
-                            // Commit the transaction.
-                    .commit();
-            isBackSide = true;
-        } else {
-            getFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
-                    .replace(R.id.fragments_container, new MainArtCoverFragment())
-                    .addToBackStack(null)
-                            // Commit the transaction.
-                    .commit();
-            isBackSide = false;
+        SharedPreferences prefs = getSharedPreferences(SHARED_PREFS_LAST_PLAYED_SONG, 0);
+        int tab_id = prefs.getInt(TAB_ID, 0);
+        if (tab_id == ALL_SONGS_TAB) {
+            allSongsList = db.getAllSongs();
+            currentPlayedListOfSongs = allSongsList;
+            currentTab = ALL_SONGS_TAB;
+
+        } else if (tab_id == PLAYLISTS_TAB) {
+            int playlist_id = prefs.getInt(PLAYLIST_ID, 0);
+            playlistSongsList = db.getSongsFromPlaylist(playlist_id);
+            currentPlayedListOfSongs = playlistSongsList;
+            currentPlaylist = PLAYLISTS_TAB;
+
+            //load the allSongsList
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            allSongsList = db.getAllSongs();
+                            if (FragmentAllSongs.getSongAdapter() != null) {
+                                FragmentAllSongs.getSongAdapter().notifyDataSetChanged();
+                            }
+                        }
+                    });
+                }
+            });
+            thread.start();
+
+        } else if (tab_id == ALBUMS_TAB) {
+            int album_id = prefs.getInt(ALBUM_ID, 0);
         }
     }
 
-    private void dbInit() {
-        // CHANGE FOR YOUR PHONE
-        //NE E TRUDNO SAMO DA MI ZAKOMENTIRASH DIRECTORYTO :D
-        // db.addFolderPath("/storage/extSdCard/Music");
-
-        db.addFolderPath("/storage/emulated/0/Music/Black");
+    private void dbInit(String musicDirectory) {
+        db.addFolderPath(musicDirectory);
         db.importFilesInDBByFolders(getContentResolver());
     }
-
 
     @Override
     public void onPrepared(MediaPlayer player) {
         player.start();
     }
 
-
     public void playSong(ArrayList<Song> songList, int position) {
 
         currentPlayingSongPosition = position;
+        currentPlayedListOfSongs = songList;
 
-        Song s = songList.get(position);
+        Song s = currentPlayedListOfSongs.get(position);
 
         setCurrentPlaylingSong(s);
 
@@ -455,33 +513,61 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
     public void playNextSong() {
 
-        if (currentPlayingSongPosition < songList.size() - 1) {
+        if (currentPlayingSongPosition < currentPlayedListOfSongs.size() - 1) {
             int pos = currentPlayingSongPosition;
-            playSong(songList, pos + 1);
+            playSong(currentPlayedListOfSongs, pos + 1);
         } else {
             //play first song
-            playSong(songList, 0);
-            currentPlayingSongPosition = 0;
+            if (repeatMode != REPEAT_OFF) {
+                playSong(currentPlayedListOfSongs, 0);
+                currentPlayingSongPosition = 0;
+            } else {
+                stopPlayer();
+                buttonPlay.setBackgroundResource(R.drawable.stop_button_default);
+            }
         }
 
         if (!isBackSide) {
             refreshArtCoverFragment();
         }
-
     }
 
     public void playPrevSong() {
         if (currentPlayingSongPosition > 0) {
             int pos = currentPlayingSongPosition;
-            playSong(songList, pos - 1);
+            playSong(currentPlayedListOfSongs, pos - 1);
         } else {
-            playSong(songList, songList.size() - 1);
-            currentPlayingSongPosition = songList.size() - 1;
+            playSong(currentPlayedListOfSongs, currentPlayedListOfSongs.size() - 1);
+            currentPlayingSongPosition = currentPlayedListOfSongs.size() - 1;
         }
 
         if (!isBackSide) {
             refreshArtCoverFragment();
         }
+    }
+
+
+    private void stopPlayer() {
+
+        try {
+            mediaPlayer.reset();
+            mediaPlayer.setDataSource(new FileInputStream(new File(getCurrentPlaylingSong().getPath())).getFD());
+            mediaPlayer.prepare();
+
+        } catch (IOException e) {
+
+        }
+        currentDurationLabel.setText(Utils.durationFormat(0));
+        progressBar.setProgress(0);
+        buttonPlay.setBackgroundResource(R.drawable.stop_button_default);
+
+        //set again 'play' icon after a half second
+       /* handler.postDelayed(new Runnable() {
+            public void run() {
+                buttonPlay.setBackgroundResource(R.drawable.play_button_default);
+            }
+        }, 500);*/
+
     }
 
     private void setIdsForViews() {
@@ -495,17 +581,42 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         buttonPrevious = (Button) findViewById(R.id.previousButton);
         buttonRepeat = (Button) findViewById(R.id.repeatButton);
         buttonShuffle = (Button) findViewById(R.id.shuffleButton);
-
         currentDurationLabel = (TextView) findViewById(R.id.current_song_duration);
         totalDurationLabel = (TextView) findViewById(R.id.total_song_duration);
+    }
+
+
+    //card flip animation
+    private void flipCard() {
+
+        if (!isBackSide) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+                    .replace(R.id.fragments_container, new MainListsFragment())
+                    .addToBackStack(null)
+                            // Commit the transaction.
+                    .commit();
+            isBackSide = true;
+        } else {
+            getFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                            R.animator.card_flip_left_in, R.animator.card_flip_left_out)
+                    .replace(R.id.fragments_container, new MainArtCoverFragment())
+                    .addToBackStack(null)
+                            // Commit the transaction.
+                    .commit();
+            isBackSide = false;
+        }
     }
 
     public void refreshArtCoverFragment() {
         getFragmentManager()
                 .beginTransaction()
-//                .setCustomAnimations(
-//                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-//                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
                 .replace(R.id.fragments_container, new MainArtCoverFragment())
                 .addToBackStack(null)
                 .commit();
@@ -514,9 +625,6 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
     public void refreshMainListsFragment() {
         getFragmentManager()
                 .beginTransaction()
-//                .setCustomAnimations(
-//                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-//                        R.animator.card_flip_left_in, R.animator.card_flip_left_out)
                 .replace(R.id.fragments_container, new MainListsFragment())
                 .addToBackStack(null)
                 .commit();
@@ -530,36 +638,11 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
         TextView textView = (TextView) layout.findViewById(R.id.toast_text_view);
         textView.setText(message);
 
-
         Toast toast = new Toast(this);
         toast.setView(layout);
         toast.setGravity(Gravity.CENTER, 0, 400);
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.show();
-    }
-
-    private void stopPlayer() {
-
-        try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(new FileInputStream(new File(getCurrentPlaylingSong().getPath())).getFD());
-            mediaPlayer.prepare();
-
-        } catch (IOException e) {
-
-        }
-
-        currentDurationLabel.setText(Utils.durationFormat(0));
-        progressBar.setProgress(0);
-        buttonPlay.setBackgroundResource(R.drawable.stop_button_default);
-
-        //set again 'play' icon after a half second
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                buttonPlay.setBackgroundResource(R.drawable.play_button_default);
-            }
-        }, 500);
-
     }
 
 

@@ -1,4 +1,4 @@
-package com.beathub.kamenov;
+package AdaptersAndAbstractClasses;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.beathub.kamenov.R;
 
 import java.util.ArrayList;
 
@@ -17,7 +19,7 @@ public class SongAdapter extends ArrayAdapter<Song>{
     private ArrayList<Song> songs;
     private ViewHelper helper;
 
-    SongAdapter(Context context, int layout_id, ArrayList<Song> songs){
+    public SongAdapter(Context context, int layout_id, ArrayList<Song> songs){
         super(context, layout_id, songs);
         this.context = context;
         this.layout_id = layout_id;

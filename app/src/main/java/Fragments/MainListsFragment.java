@@ -1,4 +1,4 @@
-package com.beathub.kamenov;
+package Fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,8 +13,12 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
+import com.beathub.kamenov.MainActivity;
+import com.beathub.kamenov.R;
+
+import AdaptersAndAbstractClasses.PlaylistsAdapter;
+import AdaptersAndAbstractClasses.Song;
 import DataBases.BeatHubBaseHelper;
 
 public class MainListsFragment extends Fragment {
@@ -28,7 +32,6 @@ public class MainListsFragment extends Fragment {
 
         viewPager = (ViewPager) view.findViewById(R.id.pager);
 
-        Toast.makeText(getActivity().getApplicationContext(), String.valueOf(viewPager.getCurrentItem()), Toast.LENGTH_LONG).show();
         // Set the ViewPagerAdapter into ViewPager
         viewPager.setAdapter(new ViewPagerListsFragments(getChildFragmentManager()));
         viewPager.setOffscreenPageLimit(2);
@@ -37,12 +40,7 @@ public class MainListsFragment extends Fragment {
         return view;
     }
 
-    protected static ViewPager getViewPager() {
-        return viewPager;
-    }
-
-    protected static void addToPlayListDialog(final Activity activity, final Song song) {
-
+    public static void addToPlayListDialog(final Activity activity, final Song song) {
 
         final AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
 
@@ -61,33 +59,27 @@ public class MainListsFragment extends Fragment {
         createNewPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createNewPlaylist(activity, song, playlists);
-
+                createNewPlaylist(activity, playlists);
             }
         });
-        playlists.setOnItemClickListener(new AdapterView.OnItemClickListener()
 
-                                         {
-                                             @Override
-                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                 db.addSongToPlaylist((int) song.getId(), position + 1);
-                                                 ((MainActivity) activity).showToastWithMessage("Added");
+        playlists.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ((MainActivity) activity).showToastWithMessage("Added");
+                db.addSongToPlaylist((int) song.getId(), position + 1);
 
-                                             }
-                                         }
+                //refresh fragments to update the info
+                ((MainActivity) activity).refreshMainListsFragment();
+            }
+        });
 
-        );
-
-        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }
-
-        );
+        dialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
         dialog.setView(view);
         dialog.create();
         dialog.show();
@@ -97,7 +89,7 @@ public class MainListsFragment extends Fragment {
     /*
     * position - position of the song in the list
     * */
-    private static void createNewPlaylist(final Activity activity, final Song songForAdding, final ListView listPlayLists) {
+    protected static void createNewPlaylist(final Activity activity, final ListView listPlayLists) {
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
 
@@ -110,20 +102,19 @@ public class MainListsFragment extends Fragment {
         dialog.setPositiveButton("Create", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 if (playlistName.getText().length() != 0) {
 
                     //create new playlist
                     db.addPlaylist(playlistName.getText().toString());
 
-                    int playlist_id = db.getLastFreePositionToAddPlaylist();
-
-                    db.addSongToPlaylist((int) songForAdding.getId(), playlist_id);
+                    //refresh fragments to update the info
                     ((MainActivity) activity).refreshMainListsFragment();
                 }
+
                 ((MainActivity) activity).showToastWithMessage("Created");
                 PlaylistsAdapter newPlaylistAdapter = new PlaylistsAdapter(activity, R.layout.playlist_simple_row_item, db.getAllPlaylists());
                 listPlayLists.setAdapter(newPlaylistAdapter);
-
 
             }
         });
@@ -139,5 +130,43 @@ public class MainListsFragment extends Fragment {
         dialog.show();
 
     }
+
+    public static void createNewPlaylist(final Activity activity) {
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(activity);
+
+        LayoutInflater inflater = LayoutInflater.from(activity);
+
+        View view = inflater.inflate(R.layout.create_new_playlist_dialog_layout, null);
+
+        final EditText inputText = (EditText) view.findViewById(R.id.new_playlist_name);
+
+        dialog.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (inputText.getText().length() != 0) {
+
+                    //create new playlist
+                    db.addPlaylist(inputText.getText().toString());
+
+                    //refresh fragments to update the info
+                    ((MainActivity) activity).refreshMainListsFragment();
+                }
+            }
+        });
+
+        dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setView(view);
+        dialog.create();
+        dialog.show();
+    }
+
 
 }

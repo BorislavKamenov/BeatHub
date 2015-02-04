@@ -4,9 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-/**
- * Created by Borislav on 18.1.2015 г..
- */
+
 public class FileObserverService extends Service {
 
 
