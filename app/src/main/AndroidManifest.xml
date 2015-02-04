@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".ActivityChooser"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="sensorPortrait">
@@ -24,6 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="BeatHub"
+            android:launchMode="singleTop"
+            android:screenOrientation="sensorPortrait"></activity>
 
 
     </application>
