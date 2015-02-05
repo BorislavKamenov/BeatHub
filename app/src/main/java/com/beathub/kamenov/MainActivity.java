@@ -1,5 +1,6 @@
 package com.beathub.kamenov;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -146,37 +147,13 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
 
         db = new BeatHubBaseHelper(getApplicationContext());
         setIdsForViews();
-
-        firstInstalling();
         initializeSongLists();
 
         progressBar.setOnSeekBarChangeListener(this);
         mediaPlayer.setOnCompletionListener(this);
 
         // After install by default play first song
-        playSong(currentPlayedListOfSongs, 0);
-
-        buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
-        buttonRepeat.setBackgroundResource(R.drawable.repeat_button_off);
-        buttonShuffle.setBackgroundResource(R.drawable.shuffle_button_off);
-
-        RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
-
-        if (savedInstanceState == null) {
-            MainArtCoverFragment artcoverFragment = new MainArtCoverFragment();
-
-            getFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragments_container, artcoverFragment)
-                    .commit();
-        }
-
-        currentSongView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flipCard();
-            }
-        });
+        playFirstSong(savedInstanceState);
 
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,6 +261,32 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
             }
         });
 
+    }
+
+    private void playFirstSong(Bundle savedInstanceState) {
+        playSong(currentPlayedListOfSongs, 0);
+
+        buttonPlay.setBackgroundResource(R.drawable.pause_button_default);
+        buttonRepeat.setBackgroundResource(R.drawable.repeat_button_off);
+        buttonShuffle.setBackgroundResource(R.drawable.shuffle_button_off);
+
+        RelativeLayout currentSongView = (RelativeLayout) findViewById(R.id.currentSongListView);
+
+        if (savedInstanceState == null) {
+            MainArtCoverFragment artcoverFragment = new MainArtCoverFragment();
+
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragments_container, artcoverFragment)
+                    .commit();
+        }
+
+        currentSongView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flipCard();
+            }
+        });
     }
 
     @Override
@@ -394,20 +397,6 @@ public class MainActivity extends FragmentActivity implements MediaPlayer.OnComp
                 }
 
 
-        }
-    }
-
-    private void firstInstalling() {
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean("previouslyStarted", false);
-
-        if (!previouslyStarted) {
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean("previouslyStarted", Boolean.TRUE);
-            edit.commit();
-
-            dbInit("/storage/emulated/0/Music");
         }
     }
 

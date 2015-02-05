@@ -2,14 +2,18 @@ package Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import ObjectClasses.Playlist;
+
 import com.beathub.kamenov.R;
 
 import java.util.ArrayList;
@@ -58,11 +62,24 @@ public class FragmentListViewPlaylists extends Fragment {
                 FragmentSongsInPlaylist fragmentSongsInPlaylist = new FragmentSongsInPlaylist();
                 fragmentSongsInPlaylist.setArguments(bundle);
 
-                ((FragmentPlaylist)getParentFragment()).openFragment(fragmentSongsInPlaylist,
+                ((FragmentPlaylist) getParentFragment()).openFragment(fragmentSongsInPlaylist,
                         getParentFragment().getChildFragmentManager());
             }
         });
 
+        registerForContextMenu(playlists);
+
         return view;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        menu.add("Delete Playlist");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        Toast.makeText(getActivity(), "MARA", Toast.LENGTH_LONG).show();
+        return true;
     }
 }

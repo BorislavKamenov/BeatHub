@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnKeyListener;
+import android.graphics.Color;
 import android.os.Environment;
 import android.text.Editable;
 import android.view.Gravity;
@@ -25,6 +26,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.beathub.kamenov.R;
 
 public class DirectoryChooserDialog {
     private boolean m_isNewFolderEnabled = true;
@@ -197,6 +200,7 @@ public class DirectoryChooserDialog {
         m_titleView.setTextColor(m_context.getResources().getColor(android.R.color.white));
         m_titleView.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
         m_titleView.setText(title);
+        m_titleView.setTextColor(Color.BLUE);
 
         Button newDirButton = new Button(m_context);
         newDirButton.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));

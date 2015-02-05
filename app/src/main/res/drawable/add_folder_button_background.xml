@@ -1,8 +1,8 @@
 <shape
-    android:shape="oval"
+    android:shape="ring"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="#49F5FF" />
     <size
         android:width="60dp"
-        android:height="30dp" />
+        android:height="60dp" />
 </shape>
