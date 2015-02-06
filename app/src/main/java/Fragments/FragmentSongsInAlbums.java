@@ -17,7 +17,7 @@ import com.beathub.kamenov.R;
 
 import java.util.ArrayList;
 
-import AdaptersAndAbstractClasses.Song;
+import ObjectClasses.Song;
 import AdaptersAndAbstractClasses.SongAdapter;
 import DataBases.BeatHubBaseHelper;
 

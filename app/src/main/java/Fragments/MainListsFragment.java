@@ -18,7 +18,7 @@ import com.beathub.kamenov.MainActivity;
 import com.beathub.kamenov.R;
 
 import AdaptersAndAbstractClasses.PlaylistsAdapter;
-import AdaptersAndAbstractClasses.Song;
+import ObjectClasses.Song;
 import DataBases.BeatHubBaseHelper;
 
 public class MainListsFragment extends Fragment {

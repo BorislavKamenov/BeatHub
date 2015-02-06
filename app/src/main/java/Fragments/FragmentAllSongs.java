@@ -16,7 +16,7 @@ import com.beathub.kamenov.R;
 
 import java.util.ArrayList;
 
-import AdaptersAndAbstractClasses.Song;
+import ObjectClasses.Song;
 import AdaptersAndAbstractClasses.SongAdapter;
 import DataBases.BeatHubBaseHelper;
 
@@ -53,10 +53,10 @@ public class FragmentAllSongs extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_allsongs, container, false);
-
         listView = (ListView) view.findViewById(R.id.list_view_all_songs);
         songAdapter = new SongAdapter(getActivity().getApplicationContext(), R.layout.song_simple_row_item, songs);
         listView.setAdapter(songAdapter);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         registerForContextMenu(listView);
 
         return view;

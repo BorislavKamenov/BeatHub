@@ -1,4 +1,4 @@
-package AdaptersAndAbstractClasses;
+package ObjectClasses;
 
 /**
  * Created by Borislav on 21.1.2015 г..

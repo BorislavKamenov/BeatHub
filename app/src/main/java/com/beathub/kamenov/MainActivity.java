@@ -1,11 +1,9 @@
 package com.beathub.kamenov;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.View;
@@ -23,8 +21,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import AdaptersAndAbstractClasses.Song;
-import AdaptersAndAbstractClasses.Utils;
+import ObjectClasses.Song;
+import ObjectClasses.Utils;
 import DataBases.BeatHubBaseHelper;
 import Fragments.FragmentAllSongs;
 import Fragments.MainArtCoverFragment;

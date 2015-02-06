@@ -11,7 +11,7 @@ import android.provider.MediaStore;
 
 import ObjectClasses.Album;
 import ObjectClasses.Playlist;
-import AdaptersAndAbstractClasses.Song;
+import ObjectClasses.Song;
 
 import java.util.ArrayList;
 

@@ -15,7 +15,7 @@ import com.beathub.kamenov.R;
 import java.util.ArrayList;
 
 import AdaptersAndAbstractClasses.PlaylistsAdapter;
-import AdaptersAndAbstractClasses.Song;
+import ObjectClasses.Song;
 
 public class FragmentPlaylist extends Fragment {
     private ListView listViewPlaylists;
